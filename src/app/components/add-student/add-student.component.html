@@ -1,0 +1,73 @@
+<div class="submit-form">
+  <div *ngIf="!submitted">
+    <h2>Add New Student</h2>
+    
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        required
+        [(ngModel)]="student.firstName"
+        name="firstName"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="lastName"
+        required
+        [(ngModel)]="student.lastName"
+        name="lastName"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="admissionNumber">Admission Number</label>
+      <input
+        type="text"
+        class="form-control"
+        id="admissionNumber"
+        required
+        [(ngModel)]="student.admissionNumber"
+        name="admissionNumber"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="grade">Grade/Class</label>
+      <input
+        type="text"
+        class="form-control"
+        id="grade"
+        required
+        [(ngModel)]="student.grade"
+        name="grade"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="contactPhone">Contact Phone</label>
+      <input
+        type="text"
+        class="form-control"
+        id="contactPhone"
+        [(ngModel)]="student.contactPhone"
+        name="contactPhone"
+      />
+    </div>
+
+    <button (click)="saveStudent()" class="btn btn-success">Submit</button>
+    <a routerLink="/dashboard" class="btn btn-link">Cancel</a>
+  </div>
+
+  <div *ngIf="submitted">
+    <h4>Student saved successfully!</h4>
+    <p>Redirecting to dashboard...</p>
+    <button class="btn btn-primary" (click)="newStudent()">Add Another</button>
+  </div>
+</div>

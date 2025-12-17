@@ -1,0 +1,360 @@
+<!-- <div class="form-container">
+  
+  <div class="form-header">
+    <h2>New Student Admission</h2>
+    <p>Enter the details to register a new student for the academic year.</p>
+  </div>
+
+  <form [formGroup]="admissionForm" (ngSubmit)="onSubmit()"> -->
+
+    <!-- SECTION 1: Student Information -->
+    <!-- <div class="section-card" formGroupName="studentDetails">
+      <h3 class="section-title">Student Information</h3>
+      
+      <div class="grid-row"> -->
+        <!-- First Name -->
+        <!-- <div class="form-group">
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" formControlName="firstName" placeholder="e.g. Rahul">
+          <small class="error" *ngIf="admissionForm.get('studentDetails.firstName')?.touched && admissionForm.get('studentDetails.firstName')?.invalid">Name is required</small>
+        </div> -->
+
+        <!-- Last Name -->
+
+        <!-- <div class="form-group">
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" formControlName="lastName" placeholder="e.g. Sharma">
+        </div> -->
+
+        <!-- DOB -->
+
+        <!-- <div class="form-group">
+          <label>Date of Birth <span class="required">*</span></label>
+          <input type="date" formControlName="dob">
+        </div> -->
+
+        <!-- Gender -->
+
+        <!-- <div class="form-group">
+          <label>Gender <span class="required">*</span></label>
+          <select formControlName="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div> -->
+
+        <!-- Class Applying For -->
+
+        <!-- <div class="form-group">
+          <label>Admission Class <span class="required">*</span></label>
+          <select formControlName="admissionClass">
+            <option value="">Select Class</option>
+            <option *ngFor="let cls of classes" [value]="cls">{{ cls }}</option>
+          </select>
+        </div> -->
+
+        <!-- Blood Group -->
+
+        <!-- <div class="form-group">
+          <label>Blood Group</label>
+          <select formControlName="bloodGroup">
+            <option value="">Select</option>
+            <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+          </select>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- SECTION 2: Parent Details -->
+     
+    <!-- <div class="section-card" formGroupName="parentDetails">
+      <h3 class="section-title">Parent / Guardian Details</h3>
+      
+      <div class="grid-row"> -->
+        <!-- Father Name -->
+
+        <!-- <div class="form-group">
+          <label>Father's Name <span class="required">*</span></label>
+          <input type="text" formControlName="fatherName">
+        </div> -->
+
+        <!-- Father Occupation -->
+<!--          
+        <div class="form-group">
+          <label>Father's Occupation</label>
+          <input type="text" formControlName="fatherOccupation">
+        </div> -->
+
+        <!-- Mother Name -->
+
+        <!-- <div class="form-group">
+          <label>Mother's Name <span class="required">*</span></label>
+          <input type="text" formControlName="motherName">
+        </div> -->
+
+        <!-- Annual Income -->
+
+        <!-- <div class="form-group">
+          <label>Annual Income</label>
+          <input type="number" formControlName="annualIncome" placeholder="0.00">
+        </div>
+      </div>
+    </div> -->
+
+    <!-- SECTION 3: Contact Details -->
+
+    <!-- <div class="section-card" formGroupName="contactDetails">
+      <h3 class="section-title">Contact Details</h3>
+      
+      <div class="full-width">
+        <label>Full Address <span class="required">*</span></label>
+        <textarea formControlName="address" rows="2" placeholder="Street Address"></textarea>
+      </div>
+
+      <div class="grid-row">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" formControlName="city">
+        </div>
+        
+        <div class="form-group">
+          <label>Pincode</label>
+          <input type="text" formControlName="pincode">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile Number <span class="required">*</span></label>
+          <input type="tel" formControlName="mobile" placeholder="10 digit number">
+        </div>
+      </div>
+    </div> -->
+
+    <!-- SECTION 4: Transport & Previous History -->
+
+    <!-- <div class="section-card" formGroupName="otherDetails">
+      <h3 class="section-title">Other Details</h3>
+      
+      <div class="grid-row"> -->
+        <!-- Transport Toggle -->
+
+        <!-- <div class="form-group checkbox-group">
+          <label class="switch-label">
+            <input type="checkbox" formControlName="transportRequired">
+            <span>Transport Required?</span>
+          </label>
+        </div> -->
+
+        <!-- Bus Route (Shows only if Transport is checked) -->
+
+        <!-- <div class="form-group" *ngIf="admissionForm.get('otherDetails.transportRequired')?.value">
+          <label>Select Bus Route <span class="required">*</span></label>
+          <select formControlName="busRoute">
+            <option value="">Select Route</option>
+            <option *ngFor="let route of busRoutes" [value]="route">{{ route }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Previous School Name</label>
+          <input type="text" formControlName="previousSchool">
+        </div>
+      </div>
+    </div>
+ -->
+    <!-- SUBMIT ACTIONS -->
+
+    <!-- <div class="form-actions">
+      <button type="button" class="btn-cancel">Cancel</button>
+      <button type="submit" class="btn-save" [disabled]="admissionForm.invalid">Submit Admission</button>
+    </div>
+
+  </form>
+</div> -->
+
+
+
+
+
+
+
+
+<div class="admission-wrapper">
+  
+  <div class="header-card">
+    <h2>New Admission Form</h2>
+    <p>Session 2024-2025</p>
+  </div>
+
+  <div class="stepper-container">
+    <div class="step" [class.active]="currentStep >= 1">1. Student</div>
+    <div class="line"></div>
+    <div class="step" [class.active]="currentStep >= 2">2. Family</div>
+    <div class="line"></div>
+    <div class="step" [class.active]="currentStep >= 3">3. Contact</div>
+    <div class="line"></div>
+    <div class="step" [class.active]="currentStep >= 4">4. Docs</div>
+  </div>
+
+  <form [formGroup]="admissionForm" (ngSubmit)="onSubmit()" class="main-form">
+
+    <div *ngIf="currentStep === 1" formGroupName="studentDetails" class="form-section fade-in">
+      <h3>Student Details</h3>
+      <div class="form-grid">
+        <div class="field-group">
+          <label>First Name <span class="req">*</span></label>
+          <input formControlName="firstName" type="text" placeholder="e.g Arun">
+        </div>
+        <div class="field-group">
+          <label>Last Name <span class="req" aria-placeholder="e.g Sharma">*</span></label>
+          <input formControlName="lastName" type="text">
+        </div>
+        <div class="field-group">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input formControlName="dob" type="date">
+        </div>
+        <div class="field-group">
+          <label>Class Applying For <span class="req">*</span></label>
+          <select formControlName="admissionClass">
+            <option *ngFor="let c of classes" [value]="c">{{c}}</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Aadhar No (12 Digit)</label>
+          <input formControlName="aadharNo" type="text" maxlength="12">
+        </div>
+        <div class="field-group">
+          <label>Category</label>
+          <select formControlName="category">
+            <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="currentStep === 2" class="form-section fade-in">
+      
+      <div formGroupName="parentDetails">
+        <h3>Parent Details</h3>
+        <div class="form-grid">
+          <div class="field-group">
+            <label>Father's Name <span class="req">*</span></label>
+            <input formControlName="fatherName" type="text">
+          </div>
+          <div class="field-group">
+            <label>Father's Mobile <span class="req">*</span></label>
+            <input formControlName="fatherMobile" type="tel">
+          </div>
+          <div class="field-group">
+            <label>Mother's Name <span class="req">*</span></label>
+            <input formControlName="motherName" type="text">
+          </div>
+          <div class="field-group">
+            <label>Annual Income (For RTE)</label>
+            <input formControlName="annualIncome" type="number">
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="sibling-section">
+        <div class="flex-header">
+          <h3>Sibling Details (For Fee Discount)</h3>
+          <button type="button" class="btn-add" (click)="addSibling()">+ Add Sibling</button>
+        </div>
+
+        <div formArrayName="siblings">
+          <div *ngFor="let sibling of siblings.controls; let i=index" [formGroupName]="i" class="sibling-row">
+            
+            <div class="field-group">
+              <input formControlName="name" placeholder="Sibling Name">
+            </div>
+            <div class="field-group">
+              <select formControlName="class">
+                <option value="">Select Class</option>
+                <option *ngFor="let c of classes" [value]="c">{{c}}</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <input formControlName="admissionNo" placeholder="Adm No (if existing)">
+            </div>
+            
+            <button type="button" class="btn-remove" (click)="removeSibling(i)">X</button>
+          </div>
+          
+          <p *ngIf="siblings.length === 0" class="no-data-text">No siblings added.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div *ngIf="currentStep === 3" formGroupName="contact" class="form-section fade-in">
+      <h3>Address & Transport</h3>
+      <div class="field-group full-width" style="margin-bottom: 15px;">
+        <label>Current Address</label>
+        <textarea formControlName="currentAddress" rows="3"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="field-group">
+          <label>City</label>
+          <input formControlName="city" type="text">
+        </div>
+        <div class="field-group">
+          <label>Pincode</label>
+          <input formControlName="pincode" type="text">
+        </div>
+      </div>
+      
+      <div class="checkbox-row">
+        <input type="checkbox" formControlName="isPermanentSame" id="perm">
+        <label for="perm">Permanent Address same as Current</label>
+      </div>
+
+      <div class="transport-box">
+        <div class="checkbox-row">
+          <input type="checkbox" formControlName="transportRequired" id="trans">
+          <label for="trans"><strong>Transport Required?</strong></label>
+        </div>
+        <div class="field" *ngIf="admissionForm.get('contact.transportRequired')?.value">
+          <label>Select Bus Route</label>
+          <select formControlName="pickupPoint">
+            <option *ngFor="let r of transportRoutes" [value]="r">{{r}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="currentStep === 4" formGroupName="academic" class="form-step">
+      <h3>Documents</h3>
+      <div class="grid-2">
+        <div class="field">
+          <label>Previous School</label>
+          <input formControlName="previousSchool" type="text">
+        </div>
+        <div class="field">
+          <label>Transfer Certificate No</label>
+          <input formControlName="tcNumber" type="text">
+        </div>
+      </div>
+      
+      <div class="upload-grid">
+        <div class="upload-card">
+          <label>Student Photo</label>
+          <input type="file">
+        </div>
+        <div class="upload-card">
+          <label>Birth Certificate</label>
+          <input type="file">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-sec" (click)="prevStep()" [disabled]="currentStep === 1">Back</button>
+      <button type="button" class="btn-pri" (click)="nextStep()" *ngIf="currentStep < 4">Next Step</button>
+      <button type="submit" class="btn-success" *ngIf="currentStep === 4">Submit Application</button>
+    </div>
+
+  </form>
+</div>

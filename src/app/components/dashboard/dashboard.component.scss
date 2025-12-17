@@ -1,0 +1,147 @@
+.dashboard-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  // display: flex;
+  // flex-direction: column;
+  // height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #343a40;
+  color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 10; /* Keeps navbar on top */
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.navbar h2 {
+  margin: 0;
+}
+.navbar-left h2{
+  margin: 0;
+  font-size: 1.5rem;
+}
+.menu-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-logout {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* --- Main Body Layout --- */
+.main-body {
+  display: flex;
+  flex: 1; /* Takes remaining height */
+  overflow: hidden; /* Prevents double scrollbars */
+}
+
+/* --- Sidebar Styles --- */
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  transition: width 0.3s ease; /* Smooth slide animation */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* When closed, width becomes 0 */
+.sidebar.closed {
+  width: 0;
+  overflow: hidden;
+}
+
+.menu-header {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.menu-header:hover {
+  background-color: #34495e;
+}
+
+.menu-header.active {
+  background-color: #1abc9c; /* Green highlight when open */
+  color: white;
+}
+
+.label-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Submenu Styles */
+.submenu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: #243342; /* Darker background */
+}
+
+.submenu-item a {
+  display: block;
+  padding: 12px 20px 12px 54px; /* Indentation */
+  color: #bdc3c7;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.submenu-item a:hover {
+  color: white;
+  background-color: #2c3e50;
+}
+
+.content {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.student-table th, 
+.student-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.student-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.student-table tr:hover {
+  background-color: #f5f5f5;
+}

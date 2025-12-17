@@ -115,37 +115,33 @@
   background-color: #2c3e50;
 }
 
-/* Optional: Mobile responsiveness */
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0; /* Sidebar usually collapses on mobile */
-    width: 100%;
-  }
+/* Right Side User Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between "Welcome..." and Logout */
 }
 
-.main-content {
-  /* 1. Push content DOWN so it doesn't hide behind the 60px Fixed Header */
-  margin-top: 0px;
-  min-height: 100vh;
-  /* 2. Push content RIGHT so it doesn't hide behind the 250px Fixed Sidebar */
-  margin-left: 0px; 
+.user-info span {
+  font-size: 0.95rem;
+  color: #ecf0f1;
+  font-weight: 500;
+}
 
-  /* 3. Ensure it takes up the rest of the screen height */
-  min-height: calc(100vh - 60px);
-  
-  background-color: #f4f6f9;
-  padding: 20px; /* Add padding so content isn't stuck to edges */
-  box-sizing: border-box;
-  transition: margin-left 0.3s ease; /* Smooth transition if we add toggle later */
+.btn-logout {
+  background-color: #e74c3c; /* Red color */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space if you add an icon later */
+}
 
-  &.authenticated {
-    margin-top: 60px; /* Space for fixed Navbar */
-    margin-left: 250px; /* Space for fixed Sidebar */
-    padding: 20px;
-    
-    /* Responsive adjustment for mobile if needed */
-    @media (max-width: 768px) {
-      margin-left: 0;
-    }
-  }
+.btn-logout:hover {
+  background-color: #c0392b; /* Darker red on hover */
 }

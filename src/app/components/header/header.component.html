@@ -1,0 +1,55 @@
+<!-- <header class="app-header" *ngIf="isLoggedIn">
+  <div class="logo">
+    <a routerLink="/dashboard">🏫 Manage My School</a>
+  </div> -->
+<header *ngIf="isLoggedIn">  
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <nav class="navbar">
+    <div class="navbar-left">
+    <button class="menu-btn" (click)="toggleSidebar()">
+      <i class="material-icons">menu</i>
+    </button>
+    <h2>School Manager</h2>
+     <!-- <div class="logo">
+    <a routerLink="/dashboard">🏫 Manage My School</a>
+  </div> -->
+  </div>
+    <div class="user-info" *ngIf="currentUser">
+      <span>Welcome, {{ currentUser.username }}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </nav>
+
+<div class="main-body">
+    
+    <aside class="sidebar" [class.closed]="!isSidebarOpen">
+      
+      <div class="sidebar-content">
+        <div *ngFor="let item of menuItems" class="menu-group">
+          
+          <div class="menu-header" 
+               (click)="toggleMenu(item)"
+               [class.active]="expandedItem === item">
+            
+            <div class="label-container">
+              <i class="material-icons" *ngIf="item.icon">{{ item.icon }}</i>
+              <!-- <a [routerLink]="item.route">{{ item.label }}</a> -->
+              <span [routerLink]="item.route">{{ item.label }}</span>
+            </div>
+            
+            <span class="arrow" *ngIf="item.children && item.children.length">
+              {{ expandedItem === item ? '▼' : '▶' }}
+            </span>
+          </div>
+
+          <ul class="submenu" *ngIf="expandedItem === item">
+            <li *ngFor="let child of item.children" class="submenu-item">
+              <a [routerLink]="child.route">{{ child.label }}</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </aside>
+    </div>
+</header>

@@ -1,0 +1,259 @@
+<div class="page-container">
+  <!-- 1. Header & Breadcrumb -->
+  <header class="page-header">
+    <div class="breadcrumb">Dashboard &gt; Students &gt; <span class="active">Add New</span></div>
+    <h1>New Student Admission</h1>
+  </header>
+
+  <form (ngSubmit)="saveStudent()" #studentForm="ngForm">
+    
+    <!-- SECTION 1: ACADEMIC DETAILS -->
+    <section class="card">
+      <div class="card-header">
+        <h3>Academic Details</h3>
+      </div>
+      <div class="card-body grid-2-col">
+        <!-- Academic Session -->
+        <div class="form-group">
+          <label>Academic Session <span class="required">*</span></label>
+          <select class="form-control" [(ngModel)]="student.academicSession.id" name="session" required>
+            <option value="" disabled selected>Select Session</option>
+            <option *ngFor="let ses of sessions" [value]="ses.id">{{ ses.sessionName }}</option>
+          </select>
+        </div>
+
+        <!-- Admission Number -->
+        <div class="form-group">
+          <label>Admission Number <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.admissionNumber" name="admissionNumber" required placeholder="e.g. A-2025-001">
+        </div>
+
+        <!-- Class (Standard) -->
+        <div class="form-group">
+          <label>Class <span class="required">*</span></label>
+          <select class="form-control" [(ngModel)]="student.standard.id" name="standard" required>
+            <option value="" disabled selected>Select Class</option>
+            <option *ngFor="let std of standards" [value]="std.id">{{ std.gradeName }}</option>
+          </select>
+        </div>
+
+        <!-- Section -->
+        <div class="form-group">
+          <label>Section <span class="required">*</span></label>
+          <select class="form-control" [(ngModel)]="student.section.id" name="section" required>
+            <option value="" disabled selected>Select Section</option>
+            <option *ngFor="let sec of sections" [value]="sec.id">{{ sec.sectionName }}</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PERSONAL DETAILS -->
+    <section class="card">
+      <div class="card-header">
+        <h3>Personal Details</h3>
+      </div>
+      <div class="card-body grid-2-col">
+        <!-- First Name -->
+        <div class="form-group">
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.lastName" name="lastName" required>
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="form-group">
+          <label>Date of Birth <span class="required">*</span></label>
+          <input type="date" class="form-control" [(ngModel)]="student.dateOfBirth" name="dob" required>
+        </div>
+
+        <!-- Contact Phone -->
+        <div class="form-group">
+          <label>Contact Phone</label>
+          <input type="tel" class="form-control" [(ngModel)]="student.contactPhone" name="phone" placeholder="10-digit mobile number">
+      </div>
+
+        <!-- Aadhar No -->
+      <div class="form-group">
+          <label>Nationality</label>
+          <input type="aadhar" class="form-control" [(ngModel)]="student.aadharNumber" name="aadhar" placeholder="e.g. Indian,NRI,foreigner">
+      </div>
+      
+        <!-- Aadhar No -->
+      <div class="form-group">
+          <label>Aadhar Number</label>
+          <input type="aadhar" class="form-control" [(ngModel)]="student.aadharNumber" name="aadhar" placeholder="16-digit Aadhar number">
+        </div>
+
+      </div>
+    </section>
+
+
+
+    <section class="card">
+       <div class="card-header">
+        <h3>Parents Details</h3>
+      </div>
+      <div class="card-body grid-2-col">
+
+         <!-- Fathers Name -->
+        <div class="form-group">
+          <label>Father's Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required>
+        </div>
+         <!-- Mother's Name -->
+        <div class="form-group">
+          <label>Mother's Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required>
+        </div>
+
+         <!-- Father's Occupation -->
+        <div class="form-group">
+          <label>Father's Occupation <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required>
+        </div>
+
+         <!-- Mother Occupation -->
+        <div class="form-group">
+          <label>Mother Occupation <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required>
+        </div>
+
+         <!-- Primary Mobile No. -->
+        <div class="form-group">
+          <label>Primary Mobile No. <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" required placeholder="10-digit mobile number">
+        </div>
+
+         <!-- Secandary Mobile No. -->
+        <div class="form-group">
+          <label>Secandary Mobile No.<span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" placeholder="10-digit mobile number">
+        </div>
+
+        <div class="form-group">
+          <label>Aadhar Number</label>
+          <input type="aadhar" class="form-control" [(ngModel)]="student.aadharNumber" name="aadhar" placeholder="16-digit Aadhar number">
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="aadhar" class="form-control" [(ngModel)]="student.aadharNumber" name="aadhar" placeholder="@email.com">
+        </div>
+
+      </div>
+    </section>
+
+    <Section class="card">
+      <div class="card-header">
+        <h3>Communication Adress</h3>
+      </div>
+
+      <div class="card-body grid-2-col">
+
+          <!-- Current Address -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label>Current Address <span class="required">*</span></label>
+          <!-- Added (input) event to sync if checkbox is checked -->
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="student.currentAddress" 
+            name="currentAddress" 
+            rows="3" 
+            required 
+            placeholder="House No, Street, Landmark..."
+            (input)="onCurrentAddressChange()"
+          ></textarea>
+        </div>
+
+        <div class="grid-2-col">
+          <div class="form-group">
+            <label>City <span class="required">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="student.city" name="city" required>
+          </div>
+          <div class="form-group">
+            <label>State <span class="required">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="student.state" name="state" required>
+          </div>
+          <div class="form-group">
+            <label>Pin Code <span class="required">*</span></label>
+            <input type="text" class="form-control" [(ngModel)]="student.pinCode" name="pinCode" required pattern="[0-9]{6}">
+          </div>
+        </div>
+
+        <!-- CHECKBOX FOR SAME ADDRESS -->
+        <div class="form-group checkbox-group" style="margin-top: 1.5rem; margin-bottom: 0.5rem;">
+          <input 
+            type="checkbox" 
+            id="sameAddress" 
+            [(ngModel)]="isAddressSame" 
+            name="isAddressSame"
+            (change)="onAddressCheckboxChange()"
+          >
+          <label for="sameAddress" style="display: inline; margin-left: 8px; font-weight: normal;">
+            Permanent Address is same as Current Address
+          </label>
+        </div>
+
+        <!-- Permanent Address -->
+        <div class="form-group">
+          <label>Permanent Address</label>
+          <!-- [disabled] attribute prevents editing if checkbox is checked -->
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="student.permanentAddress" 
+            name="permanentAddress" 
+            rows="3" 
+            placeholder="Permanent Address"
+            [disabled]="isAddressSame"
+          ></textarea>
+        </div>
+      </div>
+    </Section>
+    
+    <section class="card">
+
+    <Div class="card-header">
+      <h3>Previous Schooling</h3>
+    </Div>
+
+         <div class="card-body grid-2-col">
+        <!-- Previous School Name -->
+        <div class="form-group">
+          <label>Previous School Name </label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" placeholder="e.g Sun Rise Public School" >
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+          <label>Last Class Pass</label>
+          <input type="text" class="form-control" [(ngModel)]="student.lastName" name="lastName" placeholder="e.g Class X">
+        </div>
+
+        <div class="form-group">
+          <label>Percentage/Grade</label>
+          <input type="text" class="form-control" [(ngModel)]="student.lastname" name="Grade" palceholder=" e.g. GPA">
+        </div>
+
+         <div class="form-group">
+          <label>TC No </label>
+          <input type="text" class="form-control" [(ngModel)]="student.firstName" name="firstName" placeholder="A2432" >
+        </div>
+    </div>
+    </section>
+
+
+
+    <!-- ACTION BUTTONS -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" routerLink="/dashboard">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!studentForm.form.valid">Save Student</button>
+    </div>
+
+  </form>
+</div>
