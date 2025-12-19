@@ -1,0 +1,70 @@
+@use '@angular/material' as mat;
+
+.page-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Filter Section */
+.search-card {
+  margin-bottom: 20px;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Material Field Adjustments */
+mat-form-field {
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  height: 56px; /* Align with inputs */
+  align-items: center;
+}
+
+/* Table Section */
+.table-container {
+  overflow: auto;
+  border-radius: 4px;
+  background: white;
+}
+
+table {
+  width: 100%;
+}
+
+.bold-text {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.badge {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+
+:root {
+  @include mat.paginator-overrides((
+    container-text-color: orange,
+    container-background-color: red,
+  ));
+}

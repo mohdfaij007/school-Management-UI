@@ -1,115 +1,234 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; // Import RouterModule
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StudentService } from '../../services/student.service';
-import { MasterService } from '../../services/master.service'; // We need to create this!
+import { MasterService } from '../../services/master.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-admission1',
-  imports: [CommonModule, FormsModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './admission1.component.html',
-  styleUrl: './admission1.component.scss'
+  styleUrls: ['./admission1.component.scss'] // Fixed typo: styleUrls (plural)
 })
-export class Admission1Component implements OnInit{
+export class Admission1Component implements OnInit {
 
- // Flag for the checkbox
-  isAddressSame: boolean = false;
+  selectedFile: File | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
+  baseURL = 'http://localhost:8080/photos/'; // Matches your Backend WebConfig
 
-  // Student Object with nested objects for Masters
-  student: any = {
-    firstName: '',
-    lastName: '',
-    dateOfBirth: '',
-    admissionNumber: '',
-    contactPhone: '',
-    standard: { id: '' },       // Initialize to avoid undefined errors
-    section: { id: '' },
-    academicSession: { id: '' },
-    aadharNumber:'',
-    // NEW ADDRESS FIELDS
-    currentAddress: '',
-    permanentAddress: '',
-    city: '',
-    state: '',
-    pinCode: '',
-  };
+  studentForm: FormGroup;
+  isEditMode: boolean = false;
+  currentStudentId: string | null = null;
 
-  // Lists for Dropdowns
+  // Dropdown Lists
   sessions: any[] = [];
   standards: any[] = [];
   sections: any[] = [];
 
   constructor(
+    private fb: FormBuilder,
     private studentService: StudentService,
-    private masterService: MasterService, // Inject MasterService
-    private router: Router
-  ) {}
+    private masterService: MasterService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
+    // 1. Initialize ALL fields here. No missing controls!
+    this.studentForm = this.fb.group({
+      // Academic
+      academicSessionId: ['', Validators.required], // Use ID, not object
+      admissionNumber: ['', Validators.required],
+      standardId: ['', Validators.required],
+      sectionId: ['', Validators.required],
+      
+      // Personal
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      contactPhone: ['', [Validators.pattern('^[0-9]{10}$')]],
+      aadharNumber: [''],
+      nationality: ['Indian'],
+      email: ['', Validators.email],
+
+      // Parents
+      fatherName: ['', Validators.required],
+      motherName: ['', Validators.required],
+      fatherOccupation: [''],
+      motherOccupation: [''],
+      primaryMobile: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      secondaryMobile: [''],
+
+      // Address
+      currentAddress: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      pinCode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
+      isAddressSame: [false], // Checkbox control
+      permanentAddress: [''],
+
+      // Previous School
+      prevSchoolName: [''],
+      lastClassPassed: [''],
+      prevGrade: [''],
+      tcNumber: ['']
+    });
+  }
 
   ngOnInit(): void {
     this.loadMasters();
+    this.setupAddressLogic(); // Setup listeners
+
+    this.currentStudentId = this.route.snapshot.paramMap.get('id');
+    if (this.currentStudentId) {
+      this.isEditMode = true;
+      this.loadStudentData(this.currentStudentId);
+    }
   }
 
   loadMasters(): void {
-    // 1. Load Sessions
-    this.masterService.getAllSessions().subscribe({
-      next: (data) => {
-        this.sessions = data;
-        // Auto-select the active session if available
-        const activeSession = data.find((s: any) => s.isActive);
-        if (activeSession) {
-          this.student.academicSession.id = activeSession.id;
+    // Use forkJoin to load all 3 APIs in parallel (Faster)
+    forkJoin({
+      sessions: this.masterService.getAllSessions(),
+      standards: this.masterService.getAllStandards(),
+      sections: this.masterService.getAllSections()
+    }).subscribe({
+      next: (result) => {
+        this.sessions = result.sessions || [];
+        this.standards = result.standards || [];
+        this.sections = result.sections || [];
+
+        // Set default session if adding new student
+        if (!this.isEditMode) {
+          const activeSession = this.sessions.find(s => s.isActive);
+          if (activeSession) {
+            this.studentForm.patchValue({ academicSessionId: activeSession.id });
+          }
         }
       },
-      error: (e) => console.error(e)
-    });
-
-    // 2. Load Standards (Classes)
-    this.masterService.getAllStandards().subscribe({
-      next: (data) => this.standards = data,
-      error: (e) => console.error(e)
-    });
-
-    // 3. Load Sections
-    this.masterService.getAllSections().subscribe({
-      next: (data) => this.sections = data,
-      error: (e) => console.error(e)
+      error: (e) => console.error('Error loading masters', e)
     });
   }
 
-    // --- NEW LOGIC: Handle Address Copy ---
-  onAddressCheckboxChange(): void {
-    if (this.isAddressSame) {
-      // If checked, copy current address to permanent address
-      this.student.permanentAddress = this.student.currentAddress;
-    } else {
-      // If unchecked, you might want to clear it, or leave it editable
-      this.student.permanentAddress = '';
-    }
-  }
+  // Reactive Logic for Address (The Standard Way)
+  setupAddressLogic(): void {
+    // Watch for checkbox changes
+    this.studentForm.get('isAddressSame')?.valueChanges.subscribe(isChecked => {
+      const permControl = this.studentForm.get('permanentAddress');
+      const currentAddr = this.studentForm.get('currentAddress')?.value;
 
-  // Also update permanent address if user types in current address while checkbox is checked
-  onCurrentAddressChange(): void {
-    if (this.isAddressSame) {
-      this.student.permanentAddress = this.student.currentAddress;
-    }
-  }
-  saveStudent(): void {
-    console.log("Submitting Student:", this.student);
-    
-    this.studentService.create(this.student).subscribe({
-      next: (res) => {
-        console.log("Student Created:", res);
-        alert('Student Saved Successfully!');
-        this.router.navigate(['/dashboard']);
-      },
-      error: (e) => {
-        console.error(e);
-        alert('Error saving student.');
+      if (isChecked) {
+        permControl?.setValue(currentAddr);
+        permControl?.disable();
+      } else {
+        permControl?.enable();
+        permControl?.setValue('');
+      }
+    });
+
+    // Watch for Current Address typing IF checkbox is checked
+    this.studentForm.get('currentAddress')?.valueChanges.subscribe(newVal => {
+      if (this.studentForm.get('isAddressSame')?.value) {
+        this.studentForm.get('permanentAddress')?.setValue(newVal, { emitEvent: false });
       }
     });
   }
 
+  loadStudentData(id: string): void {
+    this.studentService.get(id).subscribe({
+      next: (data) => {
+        // Flatten the data for the form
+        this.studentForm.patchValue({
+          ...data,
+          standardId: data.standard?.id,
+          sectionId: data.section?.id,
+          academicSessionId: data.academicSession?.id,
+          // Map other nested fields if necessary
+        });
+      if (data.profilePhoto) {
+        this.imagePreview = this.baseURL + data.profilePhoto;
+        console.log(this.imagePreview);
+      }
+    },
+      error: (e) => console.error(e)
+    });
+  }
+
+// 1. Method to handle file selection
+onFileSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedFile = file;
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
 
 
+
+
+
+
+
+  saveStudent(): void {
+    if (this.studentForm.invalid) {
+      this.studentForm.markAllAsTouched(); // Show validation errors
+      return;
+    }
+
+    const formValue = this.studentForm.getRawValue(); // Get raw value to include disabled fields
+
+    // Convert flat form data back to Objects for Backend
+    const payload = {
+      ...formValue,
+      standard: { id: formValue.standardId },
+      section: { id: formValue.sectionId },
+      academicSession: { id: formValue.academicSessionId }
+    };
+
+    if (this.isEditMode) {
+      this.studentService.update(this.currentStudentId, payload).subscribe({
+        next: () => {
+        // If there is a new file selected, upload it now
+        if (this.selectedFile && this.currentStudentId) {
+          this.studentService.uploadPhoto(this.currentStudentId, this.selectedFile).subscribe({
+             next: () => this.handleSuccess('Updated'),
+             error: () => this.snackBar.open('Data saved but photo failed', 'Close')
+          });
+        } else {
+          this.handleSuccess('Updated');
+        }
+      },
+        error: () => this.snackBar.open('Error updating', 'Close', { duration: 3000 })
+      });
+    } else {
+      this.studentService.create(payload).subscribe({
+        next: (newStudent: any) => { // Backend must return the created student object with ID
+        if (this.selectedFile) {
+           // Use the ID from response to upload photo
+           this.studentService.uploadPhoto(newStudent.id, this.selectedFile).subscribe({
+             next: () => this.handleSuccess('Created'),
+             error: () => this.snackBar.open('Student created but photo failed', 'Close')
+           });
+        } else {
+          this.handleSuccess('Created');
+        }
+      },
+        error: () => this.snackBar.open('Error creating', 'Close', { duration: 3000 })
+      });
+    }
+  }
+
+  handleSuccess(action: string): void {
+    this.snackBar.open(`Student ${action} Successfully!`, 'Close', { duration: 3000 });
+    this.router.navigate(['/search-student']); // Redirect to search/list
+  }
 }

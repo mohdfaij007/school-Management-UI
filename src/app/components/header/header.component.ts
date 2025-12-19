@@ -54,7 +54,7 @@ isLoggedIn = false;
         label: 'Students',
         icon: '',
         children: [
-          { label: 'Student Profile', route: '/exam/timetable' }
+          { label: 'Student Profile', route: '/search-student' }
         ]
       },
       {

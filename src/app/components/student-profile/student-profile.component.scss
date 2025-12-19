@@ -1,0 +1,120 @@
+/* Layout Container */
+.profile-container {
+  display: grid;
+  grid-template-columns: 320px 1fr; /* Sidebar fixed width, Content fills rest */
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Sidebar Styles */
+.profile-card {
+  text-align: center;
+  padding: 24px;
+  position: sticky;
+  top: 20px; /* Keeps it visible while scrolling */
+}
+
+.avatar-section {
+  margin-bottom: 16px;
+}
+
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #e3f2fd; /* Light blue ring */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.profile-header-text h2 {
+  margin: 10px 0 5px;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.badge-pill {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card-actions button {
+  width: 100%;
+}
+
+/* Content Area Styles */
+.details-card {
+  min-height: 500px;
+  padding: 0; /* Remove padding so tabs sit flush */
+}
+
+/* Tab Content Grid */
+.tab-content {
+  padding: 24px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.info-item label {
+  display: block;
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.info-item p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.highlight {
+  color: #007bff !important;
+  font-weight: 600;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    grid-template-columns: 1fr; /* Stack vertically on mobile */
+  }
+  
+  .profile-card {
+    position: static; /* Remove sticky on mobile */
+  }
+}
+
+/* Print Styles: Hides sidebar when printing */
+@media print {
+  .profile-sidebar { display: none; }
+  .profile-container { display: block; }
+  .details-card { box-shadow: none; border: 1px solid #ddd; }
+}

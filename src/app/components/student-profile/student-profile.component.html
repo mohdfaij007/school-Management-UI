@@ -1,0 +1,154 @@
+<div class="profile-container" *ngIf="student; else loadingTpl">
+
+  <aside class="profile-sidebar">
+    <mat-card class="profile-card">
+      <div class="avatar-section">
+        <img [src]="imagePreview || 'assets/student-avatar-placeholder.png'" alt="Student Photo" class="avatar-img" 
+             onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+      </div>
+      
+      <div class="profile-header-text">
+        <h2>{{ student.firstName }} {{ student.lastName }}</h2>
+        <span class="badge-pill">Adm No: {{ student.admissionNumber }}</span>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <mat-list>
+        <mat-list-item>
+          <mat-icon matListItemIcon>school</mat-icon>
+          <div matListItemTitle>Class</div>
+          <div matListItemLine>{{ student.standard?.gradeName }} - {{ student.section?.sectionName }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>calendar_today</mat-icon>
+          <div matListItemTitle>Session</div>
+          <div matListItemLine>{{ student.academicSession?.sessionName || 'Current' }}</div>
+        </mat-list-item>
+        <mat-list-item>
+          <mat-icon matListItemIcon>call</mat-icon>
+          <div matListItemTitle>Contact</div>
+          <div matListItemLine>{{ student.contactPhone }}</div>
+        </mat-list-item>
+      </mat-list>
+
+      <div class="card-actions">
+        <button mat-raised-button color="primary" routerLink="/edit-student/{{student.id}}">
+          <mat-icon>edit</mat-icon> Edit Profile
+        </button>
+        <button mat-stroked-button color="accent" (click)="printProfile()">
+          <mat-icon>print</mat-icon> Print
+        </button>
+      </div>
+    </mat-card>
+  </aside>
+
+  <main class="profile-content">
+    <mat-card class="details-card">
+      <mat-tab-group animationDuration="300ms" mat-stretch-tabs="false" mat-align-tabs="start">
+        
+        <mat-tab label="Personal Details">
+          <div class="tab-content grid-2">
+            <div class="info-item">
+              <label>Full Name</label>
+              <p>{{ student.firstName }} {{ student.lastName }}</p>
+            </div>
+            <div class="info-item">
+              <label>Date of Birth</label>
+              <p>{{ student.dateOfBirth | date:'mediumDate' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Gender</label>
+              <p>{{ student.gender || 'N/A' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Nationality</label>
+              <p>{{ student.nationality || 'Indian' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Aadhar Number</label>
+              <p>{{ student.aadharNumber || '-' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <p>{{ student.email || '-' }}</p>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Parents & Guardian">
+          <div class="tab-content grid-2">
+            <div class="info-item">
+              <label>Father's Name</label>
+              <p>{{ student.fatherName }}</p>
+            </div>
+            <div class="info-item">
+              <label>Mother's Name</label>
+              <p>{{ student.motherName }}</p>
+            </div>
+            <div class="info-item">
+              <label>Father's Occupation</label>
+              <p>{{ student.fatherOccupation || '-' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Primary Mobile</label>
+              <p class="highlight">{{ student.primaryMobile }}</p>
+            </div>
+            <div class="info-item">
+              <label>Secondary Mobile</label>
+              <p>{{ student.secondaryMobile || '-' }}</p>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Address Details">
+          <div class="tab-content">
+            <div class="info-row">
+              <div class="info-item full-width">
+                <label>Current Address</label>
+                <p>{{ student.currentAddress }}</p>
+                <p>{{ student.city }}, {{ student.state }} - {{ student.pinCode }}</p>
+              </div>
+            </div>
+            <mat-divider style="margin: 20px 0"></mat-divider>
+            <div class="info-row">
+              <div class="info-item full-width">
+                <label>Permanent Address</label>
+                <p>{{ student.permanentAddress || 'Same as Current' }}</p>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Previous Education">
+          <div class="tab-content grid-2">
+            <div class="info-item">
+              <label>School Name</label>
+              <p>{{ student.prevSchoolName || '-' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Last Class Passed</label>
+              <p>{{ student.lastClassPassed || '-' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Grade/Percentage</label>
+              <p>{{ student.prevGrade || '-' }}</p>
+            </div>
+            <div class="info-item">
+              <label>TC Number</label>
+              <p>{{ student.tcNumber || '-' }}</p>
+            </div>
+          </div>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card>
+  </main>
+
+</div>
+
+<ng-template #loadingTpl>
+  <div class="loading-container">
+    <p>Loading Profile...</p>
+  </div>
+</ng-template>
