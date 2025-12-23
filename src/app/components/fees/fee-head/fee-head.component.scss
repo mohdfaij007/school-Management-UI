@@ -1,0 +1,68 @@
+/* Container Spacing */
+.container-fluid {
+  padding: 20px;
+  background-color: #f5f7fa; /* Light grey background for the whole page */
+  min-height: 100vh;
+}
+
+/* Card Styling */
+mat-card {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important; /* Soft shadow */
+  border-radius: 8px;
+}
+
+mat-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px !important; /* Space between title and content */
+}
+
+/* Form Fields - Make them look consistent */
+mat-form-field {
+  width: 100%; /* Force full width */
+  margin-bottom: 5px;
+}
+
+/* Button Styling */
+button[type="submit"] {
+  width: 100%;
+  padding: 6px;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+}
+
+th.mat-header-cell {
+  background-color: #3f51b5; /* Primary Color Header */
+  color: white; 
+  font-weight: bold;
+}
+
+td.mat-cell {
+  padding: 12px 8px; /* Breathing room for rows */
+  border-bottom-color: #eee;
+}
+
+tr:hover {
+  background-color: #f9f9f9; /* Subtle hover effect */
+}
+
+/* Force the header to spread out */
+.header-row {
+  display: flex;
+  justify-content: space-between; /* Pushes items to edges */
+  align-items: center; /* Aligns them vertically */
+  margin-bottom: 20px;
+}
+
+/* Ensure the title text doesn't wrap weirdly */
+.header-text h2 {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}

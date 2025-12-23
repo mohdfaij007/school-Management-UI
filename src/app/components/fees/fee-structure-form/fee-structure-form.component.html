@@ -1,0 +1,104 @@
+<div class="page-container">
+  
+  <mat-card class="form-card">
+    
+    <div class="card-header-custom">
+      <h2>{{ isEditMode ? 'Edit the Fee Mapping' : 'Add New Fee Mapping'}}</h2>
+      <p>{{ isEditMode ? 'Update a fee type for a specific class or update the amount.' : 'Link a fee type to a specific class and set the amount.' }}</p>
+    </div>
+
+    <form [formGroup]="structureForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-content">
+        
+        <div class="form-grid-row">
+          
+          <div class="form-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Academic Session</mat-label>
+              <mat-select formControlName="academicSessionId">
+                <mat-option *ngFor="let session of sessions" [value]="session.id">
+                  {{ session.sessionName }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="structureForm.get('academicSessionId')?.hasError('required')">
+                Session is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Class (Standard)</mat-label>
+              <mat-select formControlName="classId">
+                <mat-option *ngFor="let cls of classes" [value]="cls.id">
+                  {{ cls.gradeName }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="structureForm.get('classId')?.hasError('required')">
+                Class is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-grid-row">
+          
+          <div class="form-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Fee Head (Type)</mat-label>
+              <mat-select formControlName="feeHeadId">
+                <mat-option *ngFor="let head of feeHeads" [value]="head.id">
+                  {{ head.headName }} ({{ head.frequency }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="structureForm.get('feeHeadId')?.hasError('required')">
+                Fee Head is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-col">
+            <mat-form-field appearance="outline">
+              <mat-label>Amount (₹)</mat-label>
+              <input matInput type="number" formControlName="amount" placeholder="e.g. 5000">
+              <mat-icon matSuffix>currency_rupee</mat-icon>
+              <mat-error *ngIf="structureForm.get('amount')?.hasError('required')">
+                Amount is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="mandatory-toggle-row">
+          <mat-slide-toggle formControlName="isMandatory" color="primary">
+            <span style="font-weight: 500; font-size: 16px;">Is this a Mandatory Fee?</span>
+          </mat-slide-toggle>
+          <div class="text-muted mt-2" style="margin-left: 50px; font-size: 0.7em;">
+            If enabled, this fee will be automatically assigned to every student in this class.
+          </div>
+        </div>
+        </div>
+
+      
+
+      <div class="form-actions">
+        
+        <button mat-button type="button" routerLink="/fees/structure" color="warn">
+          Cancel
+        </button>
+
+        <div  class="d-flex align-items-center gap-3">
+          <mat-checkbox *ngIf="!isEditMode" [(ngModel)]="createAnother" [ngModelOptions]="{standalone: true}" color="primary" >
+            Assign another fee to this class
+          </mat-checkbox>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="structureForm.invalid">
+            <mat-icon>save</mat-icon> {{isEditMode ? 'Update' : 'Save'}}
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+  </mat-card>
+</div>

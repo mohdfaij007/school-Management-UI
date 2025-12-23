@@ -1,0 +1,66 @@
+/* 1. Page Background */
+.page-container {
+  padding: 40px 20px;
+  background-color: #f0f2f5;
+  min-height: 90vh;
+}
+
+/* 2. The Main Card */
+.form-card {
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  background: white;
+}
+
+/* 3. Header Styling */
+.card-header-custom {
+  background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%);
+  padding: 20px 24px;
+  color: white;
+}
+.card-header-custom h2 { margin: 0; font-size: 1.5rem; font-weight: 500; }
+.card-header-custom p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+/* 4. Content Area */
+.form-content { padding: 30px; }
+
+/* 5. Grid Layout (The "Row" Logic) */
+.form-grid-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px; /* Space between rows */
+}
+
+.form-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 6. Footer Actions */
+.form-actions {
+  background-color: #f8f9fa;
+  padding: 15px 30px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 7. Toggle Styling (New) */
+.mandatory-toggle-row {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #f8f9fa; /* Light grey box to highlight importance */
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid-row { flex-direction: column; }
+}
+
+mat-form-field { width: 100%; }

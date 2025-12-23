@@ -1,0 +1,55 @@
+/* 1. Page Background */
+.page-container {
+  padding: 40px 20px;
+  background-color: #f0f2f5; /* Enterprise Light Grey */
+  min-height: 90vh;
+}
+
+/* 2. The Card Itself */
+.form-card {
+  border-radius: 12px; /* Smooth corners */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Soft shadow */
+  overflow: hidden;
+  background: white;
+  max-width: 800px; /* Prevent it from stretching too wide on huge screens */
+  margin: 0 auto; /* Center horizontally */
+}
+
+/* 3. Header Styling */
+.card-header-custom {
+  background: linear-gradient(135deg, #3f51b5 0%, #5c6bc0 100%); /* Material Primary Gradient */
+  padding: 20px 24px;
+  color: white;
+}
+
+.card-header-custom h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.card-header-custom p {
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* 4. Form Content Spacing */
+.form-content {
+  padding: 30px;
+}
+
+/* 5. Footer Action Bar */
+.form-actions {
+  background-color: #f8f9fa; /* Light grey footer */
+  padding: 15px 30px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 6. Utility: Full width inputs */
+mat-form-field {
+  width: 100%;
+}

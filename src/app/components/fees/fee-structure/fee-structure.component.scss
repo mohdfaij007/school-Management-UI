@@ -1,0 +1,66 @@
+/* 1. Page Background */
+.page-container {
+  padding: 30px;
+  background-color: #f0f2f5;
+  min-height: 90vh;
+}
+
+/* 2. Header (Title + Add Button) */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.header-text h2 {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 3. Filter Card Styling */
+.filter-card {
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+  background: white;
+}
+
+/* --- THE FIX: Custom Flex Layout for Filters --- */
+.filter-row {
+  display: flex;
+  align-items: center; /* Aligns inputs and button vertically center */
+  gap: 20px;           /* Space between items */
+}
+
+.filter-col {
+  flex: 1;             /* Each item takes equal width */
+  min-width: 0;
+}
+
+/* On Mobile, stack them */
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+/* ----------------------------------------------- */
+
+/* 4. Table Styling */
+.table-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* 5. Utility */
+mat-form-field {
+  width: 100%;
+}
+
+.search-btn {
+  height: 56px; /* Matches the height of Material Inputs */
+  font-size: 16px;
+}

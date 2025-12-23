@@ -87,8 +87,8 @@ isLoggedIn = false;
         label: 'Fees Management',
         icon: '',
         children: [
-          { label: 'Fees Collection', route: '/fees/collection' },
-          { label: 'Due Details', route: '/fees/due' },
+          { label: 'Fees Head', route: '/fees/head' },
+          { label: 'Fees Mapping', route: 'fees/structure' },
           { label: 'Receipts', route: '/fees/receipt' }
         ]
       },
