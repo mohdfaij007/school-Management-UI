@@ -1,0 +1,9 @@
+.container { padding: 20px; }
+    .summary-cards { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
+    .card { flex: 1; padding: 20px; text-align: center; border-radius: 8px; color: white; min-width: 200px; }
+    .bg-blue { background: #1976d2; }
+    .bg-green { background: #2e7d32; }
+    .bg-purple { background: #7b1fa2; }
+    .bg-orange { background: #f57c00; }
+    .val { font-size: 24px; font-weight: bold; margin-top: 5px; }
+    .lbl { font-size: 14px; opacity: 0.9; }

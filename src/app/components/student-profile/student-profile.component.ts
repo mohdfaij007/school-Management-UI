@@ -1,4 +1,4 @@
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StudentService } from '../../services/student.service';
@@ -11,8 +11,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
+
 @Component({
   selector: 'app-student-profile',
+  standalone: true,
   imports: [
     CommonModule, RouterModule,
     MatCardModule, MatTabsModule, MatButtonModule,
@@ -21,13 +23,13 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './student-profile.component.html',
   styleUrl: './student-profile.component.scss'
 })
-export class StudentProfileComponent implements OnInit{
+export class StudentProfileComponent implements OnInit {
 
   student: any = null;
+  activeEnrollment: any = null; // Mapped Data store karne ke liye
   loading: boolean = true;
   imagePreview: string | ArrayBuffer | null = null;
-  baseURL = 'http://localhost:8080/photos/'; // Matches your Backend WebConfig
-
+  baseURL = 'http://localhost:8080/photos/';
 
   constructor(
     private route: ActivatedRoute,
@@ -48,11 +50,15 @@ export class StudentProfileComponent implements OnInit{
       next: (data) => {
         this.student = data;
         
+        // --- NAYA LOGIC ---
+        // Student ki active class aur session details nikalna
+        if (data.enrollments && data.enrollments.length > 0) {
+          this.activeEnrollment = data.enrollments.find((e: any) => e.currentActive === true || e.isCurrentActive === true);
+        }
+
         this.loading = false;
-        if(this.student.profilePhoto)
-        {
-            this.imagePreview=this.baseURL+this.student.profilePhoto;
-            console.log(this.imagePreview);
+        if (this.student.profilePhoto) {
+          this.imagePreview = `${this.baseURL}${this.student.profilePhoto}`;
         }
       },
       error: (e) => {
@@ -61,10 +67,4 @@ export class StudentProfileComponent implements OnInit{
       }
     });
   }
-
-  printProfile(): void {
-    window.print();
-  }
-
-
 }

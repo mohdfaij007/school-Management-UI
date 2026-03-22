@@ -1,9 +1,9 @@
-<div class="profile-container" *ngIf="student; else loadingTpl">
+<div class="profile-container animate__animated animate__fadeIn" *ngIf="student; else loadingTpl">
 
   <aside class="profile-sidebar">
-    <mat-card class="profile-card">
+    <mat-card class="profile-card mat-elevation-z3">
       <div class="avatar-section">
-        <img [src]="imagePreview || 'assets/student-avatar-placeholder.png'" alt="Student Photo" class="avatar-img" 
+        <img [src]="imagePreview || 'assets/placeholder-user.png'" alt="Student Photo" class="avatar-img" 
              onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
       </div>
       
@@ -16,105 +16,86 @@
 
       <mat-list>
         <mat-list-item>
-          <mat-icon matListItemIcon>school</mat-icon>
+          <mat-icon matListItemIcon color="primary">school</mat-icon>
           <div matListItemTitle>Class</div>
-          <div matListItemLine>{{ student.standard?.gradeName }} - {{ student.section?.sectionName }}</div>
+          <div matListItemLine>
+            {{ activeEnrollment?.standard?.gradeName || 'N/A' }} - {{ activeEnrollment?.section?.sectionName || 'N/A' }}
+          </div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon matListItemIcon>calendar_today</mat-icon>
+          <mat-icon matListItemIcon color="primary">calendar_today</mat-icon>
           <div matListItemTitle>Session</div>
-          <div matListItemLine>{{ student.academicSession?.sessionName || 'Current' }}</div>
+          <div matListItemLine>{{ activeEnrollment?.academicSession?.sessionName || 'Not Assigned' }}</div>
         </mat-list-item>
         <mat-list-item>
-          <mat-icon matListItemIcon>call</mat-icon>
-          <div matListItemTitle>Contact</div>
+          <mat-icon matListItemIcon color="primary">call</mat-icon>
+          <div matListItemTitle>Primary Contact</div>
           <div matListItemLine>{{ student.contactPhone }}</div>
         </mat-list-item>
       </mat-list>
 
+      <mat-divider></mat-divider>
+
       <div class="card-actions">
-        <button mat-raised-button color="primary" routerLink="/edit-student/{{student.id}}">
+        <button mat-flat-button color="primary" routerLink="/dashboard/students/edit/{{student.id}}">
           <mat-icon>edit</mat-icon> Edit Profile
         </button>
-        <button mat-stroked-button color="accent" (click)="printProfile()">
-          <mat-icon>print</mat-icon> Print
+        <button mat-stroked-button color="accent" 
+                                    [routerLink]="['/fees/collection']" 
+                                    [queryParams]="{ admNo: student.admissionNumber }">
+        <mat-icon>receipt_long</mat-icon> View Fees
         </button>
       </div>
     </mat-card>
   </aside>
 
   <main class="profile-content">
-    <mat-card class="details-card">
-      <mat-tab-group animationDuration="300ms" mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-card class="details-card mat-elevation-z3">
+      <mat-tab-group animationDuration="0ms" color="primary">
         
         <mat-tab label="Personal Details">
-          <div class="tab-content grid-2">
-            <div class="info-item">
-              <label>Full Name</label>
-              <p>{{ student.firstName }} {{ student.lastName }}</p>
-            </div>
-            <div class="info-item">
-              <label>Date of Birth</label>
-              <p>{{ student.dateOfBirth | date:'mediumDate' }}</p>
-            </div>
-            <div class="info-item">
-              <label>Gender</label>
-              <p>{{ student.gender || 'N/A' }}</p>
-            </div>
-            <div class="info-item">
-              <label>Nationality</label>
-              <p>{{ student.nationality || 'Indian' }}</p>
-            </div>
-            <div class="info-item">
-              <label>Aadhar Number</label>
-              <p>{{ student.aadharNumber || '-' }}</p>
-            </div>
-            <div class="info-item">
-              <label>Email</label>
-              <p>{{ student.email || '-' }}</p>
-            </div>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="Parents & Guardian">
-          <div class="tab-content grid-2">
-            <div class="info-item">
-              <label>Father's Name</label>
-              <p>{{ student.fatherName }}</p>
-            </div>
-            <div class="info-item">
-              <label>Mother's Name</label>
-              <p>{{ student.motherName }}</p>
-            </div>
-            <div class="info-item">
-              <label>Father's Occupation</label>
-              <p>{{ student.fatherOccupation || '-' }}</p>
-            </div>
-            <div class="info-item">
-              <label>Primary Mobile</label>
-              <p class="highlight">{{ student.primaryMobile }}</p>
-            </div>
-            <div class="info-item">
-              <label>Secondary Mobile</label>
-              <p>{{ student.secondaryMobile || '-' }}</p>
-            </div>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="Address Details">
           <div class="tab-content">
-            <div class="info-row">
-              <div class="info-item full-width">
-                <label>Current Address</label>
-                <p>{{ student.currentAddress }}</p>
-                <p>{{ student.city }}, {{ student.state }} - {{ student.pinCode }}</p>
+            <div class="grid-2">
+              <div class="info-item">
+                <label>Date of Birth</label>
+                <p>{{ student.dateOfBirth | date:'longDate' }}</p>
+              </div>
+              <div class="info-item">
+                <label>Gender</label>
+                <p>{{ student.gender || 'Not specified' }}</p>
+              </div>
+              <div class="info-item">
+                <label>Aadhar Number</label>
+                <p>{{ student.aadharNumber || '-' }}</p>
+              </div>
+              <div class="info-item">
+                <label>Email ID</label>
+                <p>{{ student.email || '-' }}</p>
               </div>
             </div>
+
             <mat-divider style="margin: 20px 0"></mat-divider>
-            <div class="info-row">
+
+            <h3 class="section-title">Parents Details</h3>
+            <div class="grid-2">
+              <div class="info-item">
+                <label>Father's Name</label>
+                <p>{{ student.fatherName || '-' }}</p>
+              </div>
+              <div class="info-item">
+                <label>Mother's Name</label>
+                <p>{{ student.motherName || '-' }}</p>
+              </div>
+            </div>
+
+            <mat-divider style="margin: 20px 0"></mat-divider>
+
+            <h3 class="section-title">Address Info</h3>
+            <div class="grid-2">
               <div class="info-item full-width">
-                <label>Permanent Address</label>
-                <p>{{ student.permanentAddress || 'Same as Current' }}</p>
+                <label>Current Address</label>
+                <p>{{ student.currentAddres }}</p>
+                <p>{{ student.city }}, {{ student.state }} - {{ student.pincode }}</p>
               </div>
             </div>
           </div>
@@ -122,7 +103,7 @@
 
         <mat-tab label="Previous Education">
           <div class="tab-content grid-2">
-            <div class="info-item">
+            <div class="info-item full-width">
               <label>School Name</label>
               <p>{{ student.prevSchoolName || '-' }}</p>
             </div>
@@ -141,14 +122,28 @@
           </div>
         </mat-tab>
 
+        <mat-tab label="Enrollment History">
+          <div class="tab-content">
+             <p class="text-muted" *ngIf="!student.enrollments || student.enrollments.length === 0">No history found.</p>
+             <mat-list>
+                <mat-list-item *ngFor="let record of student.enrollments">
+                   <mat-icon matListItemIcon [color]="record.currentActive ? 'primary' : 'accent'">history_edu</mat-icon>
+                   <div matListItemTitle>{{ record.academicSession?.sessionName }}</div>
+                   <div matListItemLine>Class: {{ record.standard?.gradeName }} | Sec: {{ record.section?.sectionName }}</div>
+                   <div matListItemLine *ngIf="record.currentActive" style="color: green; font-weight: 500;">Currently Active</div>
+                </mat-list-item>
+             </mat-list>
+          </div>
+        </mat-tab>
+
       </mat-tab-group>
     </mat-card>
   </main>
-
 </div>
 
 <ng-template #loadingTpl>
-  <div class="loading-container">
-    <p>Loading Profile...</p>
+  <div class="loading-state">
+    <mat-icon class="spinner">sync</mat-icon>
+    <p>Loading Student Profile...</p>
   </div>
 </ng-template>

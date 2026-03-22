@@ -1,0 +1,91 @@
+<div class="page-container animate__animated animate__fadeIn">
+  <header class="page-header">
+    <h1>Fee Defaulters List</h1>
+  </header>
+
+  <mat-card class="filter-card mat-elevation-z2">
+    <mat-card-content class="filter-grid">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Academic Session</mat-label>
+        <mat-select [disabled]="true" [value]="activeSession?.id">
+          <mat-option *ngIf="activeSession" [value]="activeSession.id">{{ activeSession.sessionName }} (Active)</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Select Class</mat-label>
+        <mat-select [(ngModel)]="selectedClassId" (selectionChange)="onClassChange($event)">
+          <mat-option *ngFor="let c of classes" [value]="c.id">{{ c.gradeName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Select Section</mat-label>
+        <mat-select [(ngModel)]="selectedSectionId" (selectionChange)="defaulterList = []">
+          <mat-option *ngFor="let sec of sections" [value]="sec.id">{{ sec.sectionName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="warn" class="search-btn" (click)="fetchDefaulters()" [disabled]="isLoading || !selectedClassId">
+        <mat-icon>search</mat-icon> Find Defaulters
+      </button>
+
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-text">
+    Loading defaulters...
+  </div>
+
+  <div class="table-container mat-elevation-z2" *ngIf="defaulterList.length > 0 && !isLoading">
+    <table mat-table [dataSource]="defaulterList" class="custom-table">
+
+      <ng-container matColumnDef="admNo">
+        <th mat-header-cell *matHeaderCellDef> Adm No </th>
+        <td mat-cell *matCellDef="let element" class="bold-text"> {{ element.admissionNo }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Student Name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.studentName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="father">
+        <th mat-header-cell *matHeaderCellDef> Father Name </th>
+        <td mat-cell *matCellDef="let element"> {{ element.fatherName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="contact">
+        <th mat-header-cell *matHeaderCellDef> Contact </th>
+        <td mat-cell *matCellDef="let element"> 
+          <mat-icon class="small-icon">phone</mat-icon> {{ element.contactNumber }} 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="due">
+        <th mat-header-cell *matHeaderCellDef> Due Amount </th>
+        <td mat-cell *matCellDef="let element" class="due-amount"> 
+          ₹{{ element.totalDueAmount }} 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-stroked-button color="primary" (click)="sendReminder(element)">
+            <mat-icon>notifications_active</mat-icon> Remind
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="defaulterList.length === 0 && !isLoading && selectedClassId" class="empty-state">
+    Click 'Find Defaulters' to view the list.
+  </div>
+
+</div>

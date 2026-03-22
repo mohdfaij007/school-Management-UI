@@ -4,7 +4,6 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 import { filter } from 'rxjs';
 
-// 1. Define the Interface here for simplicity
 export interface MenuItem {
   label: string;
   icon?: string;
@@ -18,172 +17,128 @@ export interface MenuItem {
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit{
-isLoggedIn = false;
+export class HeaderComponent implements OnInit {
+  isLoggedIn = false;
   username = '';
   currentUser: any;
-    // --- State Variables ---
-    isSidebarOpen = true;             // Master Switch: Is the whole sidebar visible?
-    expandedItem: MenuItem | null = null; // Accordion Switch: Which menu item is expanded?
+  isSidebarOpen = true;
+  expandedItem: MenuItem | null = null;
 
-  constructor(private storageService: StorageService, private router: Router) {
-
-     // Listen to route changes to update header visibility automatically
-    // this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd) {
-    //     this.checkLoginStatus();
-    //   }
-    // });
-
+  constructor(private storageService: StorageService, public router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.checkLoginStatus();
+      this.setActiveMenu();
     });
   }
 
+  // --- Enriched Menu Data with Material Icons ---
+  menuItems: MenuItem[] = [
+    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
+    {
+      label: 'Students', icon: 'people',
+      children: [{ label: 'Student Profile', route: '/search-student' }]
+    },
+    {
+      label: 'Admission', icon: 'how_to_reg',
+      children: [
+        { label: 'New Admission', route: '/admission1' },
+        { label: 'Enquiry', route: '/admission1' },
+        { label: 'Registration Status', route: '/status' }
+      ]
+    },
+    {
+      label: 'Masters', icon: 'account_tree',
+      children: [
+        { label: 'Add Sessions, Class & Sections', route: 'master/master-settings' },
+        { label: 'Mapping of Classes', route: 'master/session-setup' },
+        {label: 'Academic Calender', route: 'master/academic-calender'},
+        
+      ]
+    },
+    {
+      label: 'Attendance', icon: 'event_available',
+      children: [
+        { label: 'Daily Attendance', route: '/attendance-report' },
+        { label: 'Mark Attendance', route: '/mark-attendance' },
+        {label: 'Monthly Register', route: '/attendance/monthly-register'},
+      ]
+    },
+    {
+      label: 'Fees Management', icon: 'payments',
+      children: [
+        { label: 'Fees Head', route: '/fees/head' },
+        { label: 'Fees Mapping', route: '/fees/structure' },
+        { label: 'Student Fee Mapping', route: '/fees/mapping' },
+        { label: 'Receipts', route: '/fees/collection' }
+      ]
+    },
+    {
+      label: 'Staff Management', icon: 'badge',
+      children: [
+        { label: 'Teacher Profile', route: '/staff/profile' },
+        { label: 'Payroll', route: '/staff/payroll' }
+      ]
+    },
+    {
+      label: 'Examination', icon: 'quiz',
+      children: [
+        { label: 'Time Table', route: 'masters/exam' },
+        { label: 'Marks Entry', route: 'exam/marks-entry' },
+        {label: 'Report Card', route: 'exam/report-card'}
+      ]
+    },
+    {
+      label: 'Transport', icon: 'directions_bus',
+      children: [
+        { label: 'Bus Route', route: '/exam/timetable' },
+        { label: 'Transport Details', route: '/exam/reports' },
+        { label: 'Transport Expenses', route: '/transport/expanses' }
+      ]
+    },
+    {
+      label: 'Library', icon: 'local_library',
+      children: [
+        { label: 'Book List', route: '/exam/timetable' },
+        { label: 'Issue/Return', route: '/exam/reports' }
+      ]
+    },
+    {
+      label: 'Communication', icon: 'forum',
+      children: [
+        { label: 'SMS/Whatsapp', route: '/exam/timetable' },
+        { label: 'Reminders', route: '/exam/reports' },
+        { label: 'Issued Notice', route: '/communication' }
+      ]
+    },
+    {
+      label: 'Reports', icon: 'bar_chart',
+      children: [
+        { label: 'Fees Defaulters', route: '/fees/defaulters' },
+        { label: 'Daily Collection', route: '/fees/reports/daily' },
+        { label: 'Head-wise Report', route: '/fees/reports/head-wise' }
+      ]
+    }
+  ];
 
-  //  --- The Menu Data ---
-    menuItems: MenuItem[] = [
-      {
-        label: 'Dashboard',
-        icon: '',
-        route: '/dashboard',
-      },
-      {
-        label: 'Students',
-        icon: '',
-        children: [
-          { label: 'Student Profile', route: '/search-student' }
-        ]
-      },
-      {
-        label: 'Admission',
-        icon: '',
-        children: [
-          { label: 'New Admisssion', route: '/admission' },
-          { label: 'Enquiry', route: '/admission1' },
-          {label:'Student Registation Status'}
-        ]
-      },
-      {
-        label: 'Classes',
-        icon: '',
-        children: [
-          { label: 'Add Class', route: '/exam/timetable' },
-          { label: 'Assign Class', route: '/exam/reports' }
-        ]
-      },
-      {
-        label: 'Attendance',
-        icon: '',
-        children: [
-          { label: 'Daily Attendance', route: '/attendance-report' },
-          { label: 'Monthly Report', route: '/attendance/monthly' },
-          { label: 'Class-wise', route: '/attendance/class' }
-        ]
-      },
-      {
-        label: 'Fees Management',
-        icon: '',
-        children: [
-          { label: 'Fees Head', route: '/fees/head' },
-          { label: 'Fees Mapping', route: 'fees/structure' },
-          { label: 'Receipts', route: '/fees/receipt' }
-        ]
-      },
-      {
-        label: 'Staff Management',
-        icon: '',
-        children: [
-          { label: 'Teacher Profile', route: '/staff/profile' },
-          { label: 'Payroll', route: '/staff/payroll' }
-        ]
-      },
-      {
-        label: 'Examination',
-        icon: '',
-        children: [
-          { label: 'Time Table', route: '/exam/timetable' },
-          { label: 'Report Cards', route: '/exam/reports' }
-        ]
-      },
-      {
-        label: 'Transport',
-        icon: '',
-        children: [
-          { label: 'Bus Root', route: '/exam/timetable' },
-          { label: 'Student Transport Details', route: '/exam/reports' },
-          {label:'Transport Expanses',route:'transport/expanses'}
-        ]
-      },
-      {
-        label: 'Library',
-        icon: '',
-        children: [
-          { label: 'Book List', route: '/exam/timetable' },
-          { label: 'Issue/Return', route: '/exam/reports' }
-        ]
-      },
-      {
-        label: 'Communication',
-        icon: '',
-        children: [
-          { label: 'SMS/Whatsapp', route: '/exam/timetable' },
-          { label: 'Riminders', route: '/exam/reports' },
-          {label:'Issued Notice',route:'/communication'}
-        ]
-      },
-      {
-        label: 'Reports',
-        icon: '',
-        children: [
-          { label: 'Fees', route: '/exam/timetable' },
-          { label: 'Attendance', route: '/exam/reports' },
-          {label:'Exam'}
-        ]
-      },
-  
-      // Add the rest of your items (Transport, Library, etc.) here
-    ];
-  
-    // --- Functions ---
-  
-    // 1. Toggles the whole sidebar (Hamburger button)
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    }
-  
-    // 2. Toggles the sub-menus (Accordion)
-    toggleMenu(item: MenuItem) {
-      if (this.expandedItem === item) {
-        this.expandedItem = null; // Close if already open
-      } else {
-        this.expandedItem = item; // Open the new one
-      }
-    }
-  
-  
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  toggleMenu(item: MenuItem) {
+    this.expandedItem = this.expandedItem === item ? null : item;
+  }
 
   ngOnInit(): void {
-    // Check login status
-    // this.isLoggedIn = this.storageService.isLoggedIn();
-    // this.currentUser = this.storageService.getUser();
-    // if (this.isLoggedIn) {
-    //   const user = this.storageService.getUser();
-    //   this.username = user.username;
-    // }
-
-     this.checkLoginStatus();
+    this.checkLoginStatus();
   }
 
   checkLoginStatus() {
     this.isLoggedIn = this.storageService.isLoggedIn();
-// console.log(this.isLoggedIn);
     if (this.isLoggedIn) {
       this.currentUser = this.storageService.getUser();
       this.username = this.currentUser.username;
-    // console.log(this.username);  
     } else {
       this.currentUser = null;
       this.username = '';
@@ -191,6 +146,28 @@ isLoggedIn = false;
     }
   }
 
+// Yeh function current URL check karega aur parent menu ko open karega
+  setActiveMenu() {
+    const currentUrl = this.router.url;
+    
+    // Loop through all menu items
+    for (const item of this.menuItems) {
+      if (item.children) {
+        // Check if any child route matches the current active URL
+        const hasActiveChild = item.children.some(child => 
+          child.route && currentUrl.includes(child.route)
+        );
+        
+        if (hasActiveChild) {
+          this.expandedItem = item; // Open the parent accordion
+          break; // Stop searching once found
+        }
+      } else if (item.route && currentUrl.includes(item.route)) {
+        // Agar dashboard jaisa single item hai
+        this.expandedItem = null;
+      }
+    }
+  }
 
   logout(): void {
     this.storageService.clean();

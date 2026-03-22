@@ -1,0 +1,175 @@
+<div class="container">
+
+  <mat-card class="search-section" style="border-radius: 12px; margin-bottom: 20px;">
+    <div style="padding: 20px; display: flex; align-items: center; gap: 15px;">
+      <mat-form-field appearance="outline" style="width: 300px; margin-bottom: -1.25em;">
+        <mat-label>Search by Admission No</mat-label>
+        <input matInput [(ngModel)]="searchAdmissionNo" (keyup.enter)="searchStudent()">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="height: 56px;" (click)="searchStudent()">
+        Find Student
+      </button>
+    </div>
+  </mat-card>
+
+  <ng-container *ngIf="studentFound && dueReport">
+    
+    <div class="summary-cards-container">
+      
+      <div class="summary-card card-urgent">
+        <div class="card-label">Due Now (Till Date)</div>
+        <div class="card-value">₹ {{ strictDueTotal }}</div>
+      </div>
+
+      <div class="summary-card card-info">
+        <div class="card-label">Session Liability</div>
+        <div class="card-value">₹ {{ fullSessionDueTotal }}</div>
+        <small style="opacity: 0.7">Includes future months</small>
+      </div>
+
+      <div class="summary-card card-success">
+        <div class="card-label">Total Paid</div>
+        <div class="card-value">₹ {{ dueReport.totalPaidAmount }}</div>
+      </div>
+    </div>
+
+    <mat-tab-group animationDuration="0ms" style="margin-top: 25px;">
+      
+      <mat-tab label="Fee Payment & Dues">
+        
+        <div class="split-layout">
+          
+          <mat-card class="bill-card mat-elevation-z2">
+            <div class="student-header">
+              <h2>{{ dueReport.studentName }} <span style="color: #666; font-size: 1rem;">({{ dueReport.className }})</span></h2>
+            </div>
+            
+            <table mat-table [dataSource]="dueReport.dues" class="custom-table">
+              
+              <ng-container matColumnDef="head">
+                <th mat-header-cell *matHeaderCellDef> Fee Head </th>
+                <td mat-cell *matCellDef="let element"> 
+                  <span style="font-weight: 500; color: #333;">{{ element.feeHeadName }}</span>
+                  <span *ngIf="element.paidUptoMonth && element.paidUptoMonth !== 'None'" class="paid-upto-badge">
+                     {{ element.paidUptoMonth }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef> Total (Yr) </th>
+                <td mat-cell *matCellDef="let element"> ₹{{ element.totalSessionAmount || element.totalAmount }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="paid">
+                <th mat-header-cell *matHeaderCellDef> Paid </th>
+                <td mat-cell *matCellDef="let element" style="color: #2e7d32; font-weight: 500;"> ₹{{ element.paidAmount }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="due">
+                <th mat-header-cell *matHeaderCellDef> Due </th>
+                <td mat-cell *matCellDef="let element"> 
+                  <div style="line-height: 1.2;">
+                    <span style="color: #d32f2f; font-weight: 700;">₹{{ element.dueAmountStrict }}</span>
+                    <div *ngIf="element.dueAmountFull > element.dueAmountStrict" style="font-size: 11px; color: #888;">
+                      (Total: ₹{{ element.dueAmountFull }})
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['head', 'amount', 'paid', 'due']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['head', 'amount', 'paid', 'due'];"></tr>
+            </table>
+
+            <div style="padding: 20px; text-align: right; background: #fafafa; border-top: 1px solid #eee;">
+               <span style="font-size: 1.1rem; color: #555;">Net Pending (Now):</span> 
+               <span style="font-size: 1.4rem; color: #d32f2f; font-weight: bold; margin-left: 10px;">₹{{ strictDueTotal }}</span>
+            </div>
+          </mat-card>
+
+          <div class="payment-card">
+            <div class="payment-header">
+              <h3><mat-icon>payments</mat-icon> Collect Payment</h3>
+            </div>
+            
+            <div class="payment-body">
+              
+              <div class="toggle-container">
+                <span style="font-weight: 500; color: #555;">Pay Full Session?</span>
+                <mat-slide-toggle color="primary" [(ngModel)]="isPayFullSession" (change)="togglePaymentMode($event)">
+                  {{ isPayFullSession ? 'Yes (Advance)' : 'No (Current)' }}
+                </mat-slide-toggle>
+              </div>
+
+              <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Amount to Collect</mat-label>
+                <input matInput type="number" [(ngModel)]="paymentAmount">
+                <span matPrefix style="font-weight: bold; margin-right: 5px;">₹</span>
+                <mat-hint align="end">Max: ₹{{ isPayFullSession ? fullSessionDueTotal : strictDueTotal }}</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
+                <mat-label>Payment Mode</mat-label>
+                <mat-select [(ngModel)]="paymentMode">
+                  <mat-option value="CASH">Cash</mat-option>
+                  <mat-option value="ONLINE">Online / UPI</mat-option>
+                  <mat-option value="CHEQUE">Cheque</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" style="width: 100%; margin-top: 10px;">
+                <mat-label>Remarks</mat-label>
+                <input matInput [(ngModel)]="remarks" placeholder="Cheque No / Trans ID">
+              </mat-form-field>
+
+              <button mat-raised-button color="accent" class="pay-btn" 
+                style="width: 100%; margin-top: 15px;"
+                [disabled]="isProcessing || paymentAmount <= 0"
+                (click)="processPayment()">
+                <span *ngIf="!isProcessing">CONFIRM PAYMENT</span>
+                <span *ngIf="isProcessing">Processing...</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        </mat-tab>
+
+      <mat-tab label="History">
+        <div style="padding: 20px;">
+          <table mat-table [dataSource]="transactionHistory" class="mat-elevation-z2" style="width: 100%;">
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef> Date </th>
+              <td mat-cell *matCellDef="let t"> {{ t.transactionDate | date:'mediumDate' }} <br> <small style="color:#888">{{ t.transactionDate | date:'shortTime' }}</small> </td>
+            </ng-container>
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef> Amount </th>
+              <td mat-cell *matCellDef="let t" style="font-weight: 500;"> ₹{{ t.totalAmount }} </td>
+            </ng-container>
+            <ng-container matColumnDef="mode">
+              <th mat-header-cell *matHeaderCellDef> Mode </th>
+              <td mat-cell *matCellDef="let t"> <span style="background:#eee; padding: 2px 8px; border-radius: 4px; font-size: 11px;">{{ t.paymentMode }}</span> </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let t"> 
+                <button mat-icon-button color="primary" (click)="printReceipt(t)" matTooltip="Print Receipt">
+                  <mat-icon>print</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="['date', 'amount', 'mode', 'action']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['date', 'amount', 'mode', 'action'];"></tr>
+          </table>
+          <div *ngIf="transactionHistory.length === 0" style="padding: 40px; text-align: center; color: #999; font-style: italic;">
+            No transactions found for this student.
+          </div>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </ng-container>
+</div>

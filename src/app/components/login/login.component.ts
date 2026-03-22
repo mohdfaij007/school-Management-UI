@@ -1,19 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Required for ngModel
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
 
+// --- Angular Material Imports ---
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [
+    CommonModule, 
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
-
-form: any = {
+export class LoginComponent implements OnInit {
+  form: any = {
     username: '',
     password: ''
   };
@@ -30,7 +45,7 @@ form: any = {
   ngOnInit(): void {
     if (this.storageService.isLoggedIn()) {
       this.isLoggedIn = true;
-      this.router.navigate(['/dashboard']); // Redirect if already logged in
+      this.router.navigate(['/dashboard']); 
     }
   }
 
@@ -39,13 +54,9 @@ form: any = {
 
     this.authService.login(username, password).subscribe({
       next: data => {
-        // 1. Save token and user info
         this.storageService.saveUser(data);
-        
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-        
-        // 2. Navigate to Dashboard
         this.router.navigate(['/dashboard']);
       },
       error: err => {
@@ -54,5 +65,4 @@ form: any = {
       }
     });
   }
-
 }

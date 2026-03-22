@@ -1,147 +1,144 @@
-/* Page Layout */
+/* Page Container & Background */
 .page-container {
-  max-width: 900px;
+  max-width: 950px;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #c8cfd8; /* Light grey background for the page */
+  padding: 2rem 1rem;
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  background-color: #f1f5f9; /* Soothing Slate Gray background */
   min-height: 100vh;
 }
 
 /* Header */
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
 }
 
 .breadcrumb {
   font-size: 0.9rem;
-  color: #6c757d;
-  margin-bottom: 0.5rem;
-}
-
-.breadcrumb .active {
-  color: #333;
-  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 8px;
+  
+  .active {
+    color: #0f172a;
+    font-weight: 500;
+  }
 }
 
 h1 {
-  font-size: 1.75rem;
-  color: #333;
+  font-size: 1.8rem;
+  color: #1e293b;
   margin: 0;
+  font-weight: bold;
 }
 
-/* Card Design */
-.card {
-  background: rgb(243, 238, 238);
+/* Material Cards Styling */
+.form-section-card {
+  margin-bottom: 24px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  margin-bottom: 1.5rem;
-  overflow: hidden;
-  border: 1px solid #e0e0e0;
+  background: white;
+
+  mat-card-header {
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+
+    mat-card-title {
+      font-size: 1.15rem;
+      color: #334155;
+      font-weight: 600;
+    }
+  }
+
+  mat-card-content {
+    padding-top: 8px;
+  }
 }
 
-.card-header {
-  background-color: #fff;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #eee;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #007bff; /* Primary Blue for section titles */
-  font-weight: 600;
-}
-
-.card-body {
-  padding: 1.5rem;
-}
-
-/* Grid Layout */
+/* Form Grid System */
 .grid-2-col {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
-  gap: 1.5rem; /* Space between columns */
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+
+  /* Material Form Field should take full width of its grid cell */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: -1.25em; /* Helps remove default bottom margin of mat-form-field */
+  }
+
+  .full-width {
+    grid-column: span 2;
+  }
 }
 
-/* Form Elements */
-.form-group {
-  margin-bottom: 0.5rem;
+/* Photo Upload Section */
+.photo-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 0;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #555;
-  font-size: 0.95rem;
+.preview-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid #e2e8f0;
+  overflow: hidden;
+  background: #f8fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
-.required {
-  color: #dc3545;
+.upload-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  .file-name {
+    font-size: 0.85rem;
+    color: #2563eb;
+    margin-top: 4px;
+  }
+
+  .text-muted {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
 }
 
-.form-control {
-  width: 100%;
-  padding: 0.6rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  transition: border-color 0.15s ease-in-out;
-  box-sizing: border-box;
+/* Helper Classes */
+.text-muted {
+  color: #94a3b8;
 }
 
-.form-control:focus {
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-/* Buttons */
+/* Form Action Buttons */
 .form-actions {
   display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
-  gap: 1rem;
-  margin-top: 2rem;
-}
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-bottom: 40px;
 
-.btn {
-  padding: 0.6rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.btn-primary:disabled {
-  background-color: #b8daff;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: white;
-  text-decoration: none; /* For routerLink */
-  display: inline-block;
-}
-
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .grid-2-col {
-    grid-template-columns: 1fr; /* Stack columns on mobile */
+  button {
+    padding: 0px 24px;
+    height: 44px;
+    font-size: 1rem;
+    border-radius: 6px;
   }
+}
+
+/* Make disabled inputs look intentionally read-only but clean */
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--disabled {
+  background-color: #f8fafc !important;
 }

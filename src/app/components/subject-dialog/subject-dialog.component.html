@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Add New Subject</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="subjectForm" class="dialog-form">
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Subject Name</mat-label>
+      <input matInput formControlName="subjectName" placeholder="e.g., Mathematics">
+      <mat-error *ngIf="subjectForm.get('subjectName')?.hasError('required')">
+        Subject Name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Subject Code</mat-label>
+      <input matInput formControlName="subjectCode" placeholder="e.g., MAT-101">
+      <mat-error *ngIf="subjectForm.get('subjectCode')?.hasError('required')">
+        Subject Code is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Subject Type</mat-label>
+      <mat-select formControlName="subjectType">
+        <mat-option value="THEORY">Theory</mat-option>
+        <mat-option value="PRACTICAL">Practical</mat-option>
+        <mat-option value="CO-SCHOLASTIC">Co-Scholastic</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="subjectForm.invalid">
+    Save Subject
+  </button>
+</mat-dialog-actions>

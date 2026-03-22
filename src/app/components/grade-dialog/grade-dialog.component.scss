@@ -1,0 +1,13 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 10px;
+  min-width: 380px;
+}
+.full-width { width: 100%; }
+.row-group {
+  display: flex;
+  gap: 16px;
+  .half-width { flex: 1; }
+}

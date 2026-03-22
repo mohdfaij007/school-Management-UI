@@ -1,0 +1,162 @@
+<div class="page-header animate__animated animate__fadeIn">
+  <h2>Master Settings Dashboard</h2>
+  <p>Manage Academic Sessions, Classes, and Sections from a single place.</p>
+</div>
+
+<div class="content-card mat-elevation-z4 animate__animated animate__fadeInUp">
+  <mat-tab-group animationDuration="0ms" color="primary">
+    
+    <mat-tab label="Academic Sessions">
+      <div class="tab-content">
+        <div class="enterprise-add-form">
+          <mat-form-field appearance="outline" class="flex-2">
+            <mat-label>Session Name (e.g. 2025-2026)</mat-label>
+            <input matInput [(ngModel)]="newSessionName" placeholder="Enter session">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Start Date</mat-label>
+            <input matInput type="date" [(ngModel)]="newStartDate">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>End Date</mat-label>
+            <input matInput type="date" [(ngModel)]="newEndDate">
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" class="add-btn" (click)="saveSession()">
+            <mat-icon>add</mat-icon> Add
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="sessions" class="mat-elevation-z1 master-table">
+          <ng-container matColumnDef="sno">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Session Details </th>
+            <td mat-cell *matCellDef="let element"> 
+              <strong>{{element.sessionName}}</strong> <br>
+              <small class="text-muted">{{element.startDate | date}} to {{element.endDate | date}}</small>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let element">
+              <span class="badge" [ngClass]="element.active ? 'badge-active' : 'badge-inactive'">
+                {{ element.active ? 'CURRENT ACTIVE' : 'INACTIVE' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-stroked-button color="primary" *ngIf="!element.active" (click)="markAsActive(element.id)" style="margin-right: 8px;">
+                <mat-icon>check_circle</mat-icon> Set Active
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteSession(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['sno', 'name', 'status', 'action']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['sno', 'name', 'status', 'action'];"></tr>
+        </table>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Classes (Standards)">
+      <div class="tab-content">
+        <div class="add-form">
+          <mat-form-field appearance="outline">
+            <mat-label>New Class Name (e.g. Class 1)</mat-label>
+            <input matInput [(ngModel)]="newClassName" placeholder="Enter class">
+          </mat-form-field>
+          <button mat-flat-button color="primary" class="add-btn" (click)="saveClass()">
+            <mat-icon>add</mat-icon> Add Class
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="classes" class="mat-elevation-z1 master-table">
+          <ng-container matColumnDef="sno">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Class Name </th>
+            <td mat-cell *matCellDef="let element"> <strong>{{element.gradeName || element.name}}</strong> </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button color="warn" (click)="deleteClass(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Sections">
+      <div class="tab-content">
+        <div class="add-form">
+          <mat-form-field appearance="outline">
+            <mat-label>New Section Name (e.g. Section A)</mat-label>
+            <input matInput [(ngModel)]="newSectionName" placeholder="Enter section">
+          </mat-form-field>
+          <button mat-flat-button color="primary" class="add-btn" (click)="saveSection()">
+            <mat-icon>add</mat-icon> Add Section
+          </button>
+        </div>
+
+        <table mat-table [dataSource]="sections" class="mat-elevation-z1 master-table">
+          <ng-container matColumnDef="sno">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Section Name </th>
+            <td mat-cell *matCellDef="let element"> <strong>{{element.sectionName || element.name}}</strong> </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button color="warn" (click)="deleteSection(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template #confirmDialog let-data>
+  <h2 mat-dialog-title class="dialog-title">{{ data.title }}</h2>
+  <mat-dialog-content>
+    <p class="dialog-message">{{ data.message }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button [color]="data.color" [mat-dialog-close]="true">{{ data.btnText }}</button>
+  </mat-dialog-actions>
+</ng-template>

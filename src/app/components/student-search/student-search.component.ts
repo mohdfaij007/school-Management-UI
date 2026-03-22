@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { StudentService } from '../../services/student.service';
 import { MasterService } from '../../services/master.service';
+import { MasterSetupService } from '../../services/master-setup.service'; // NAYA IMPORT
+
 // Angular Material Imports
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent, MatPaginator } from '@angular/material/paginator';
@@ -14,73 +16,105 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
-
-
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-student-search',
-  imports: [CommonModule, FormsModule, RouterModule,
+  standalone: true,
+  imports: [
+    CommonModule, FormsModule, RouterModule,
     MatTableModule, MatPaginatorModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatButtonModule,
-    MatCardModule, MatSnackBarModule, MatIconModule],
+    MatCardModule, MatSnackBarModule, MatIconModule, MatTooltipModule
+  ],
   templateUrl: './student-search.component.html',
   styleUrl: './student-search.component.scss'
 })
-export class StudentSearchComponent implements OnInit{
+export class StudentSearchComponent implements OnInit {
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   // Search Filters
   keyword: string = '';
-  selectedStandard: string = ''; // ID for Class
-  selectedSection: string = '';  // ID for Section
+  selectedStandard: string = '';
+  selectedSection: string = '';
+
+  // Dropdown Data
+  standards: any[] = [];
+  sections: any[] = [];
+  mappedSetups: any[] = [];
 
   // Table Data
-  displayedColumns: string[] = ['admissionNumber', 'name', 'grade', 'section', 'contact', 'actions'];
   dataSource: any[] = [];
+  displayedColumns: string[] = ['photo', 'admissionNumber', 'name', 'class', 'section', 'contact', 'actions'];
+  baseURL = 'http://localhost:8080/photos/';
 
-   // Pagination State
+  // Pagination
   totalElements: number = 0;
   pageSize: number = 10;
   pageIndex: number = 0;
 
-  // Data
-  students: any[] = [];
-  sections: any[] = [];
-  standards: any[] = [];
-
-  isLoading: boolean = false;
-  message: string = '';
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   constructor(
-    private studentService: StudentService, 
+    private studentService: StudentService,
     private masterService: MasterService,
-    private snackBar: MatSnackBar // For notifications
+    private masterSetupService: MasterSetupService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    // Optional: Load all students on start, or keep empty
-    this.searchStudents(); 
-    this.loadMasters();
+    this.loadActiveSessionAndSetups();
+    this.fetchData(this.pageIndex, this.pageSize);
   }
-loadMasters(): void {
-    this.masterService.getAllStandards().subscribe(data => this.standards = data);
-    this.masterService.getAllSections().subscribe(data => this.sections = data);
+
+  loadActiveSessionAndSetups() {
+    this.masterService.getAllSessions().subscribe(sessions => {
+      const activeSession = sessions.find((s: any) => s.active === true);
+      if (activeSession) {
+        this.masterSetupService.getSetupBySession(activeSession.id).subscribe(setups => {
+          this.mappedSetups = setups;
+          this.extractUniqueClasses(setups);
+        });
+      }
+    });
   }
+
+  extractUniqueClasses(setups: any[]) {
+    const uniqueClassesMap = new Map();
+    setups.forEach(setup => {
+      if (!uniqueClassesMap.has(setup.standard.id)) {
+        uniqueClassesMap.set(setup.standard.id, setup.standard);
+      }
+    });
+    this.standards = Array.from(uniqueClassesMap.values());
+  }
+
+  onClassChange(classId: any) {
+    this.selectedSection = '';
+    if (classId) {
+      this.sections = this.mappedSetups
+        .filter(setup => setup.standard.id == classId)
+        .map(setup => setup.section);
+    } else {
+      this.sections = [];
+    }
+    this.searchStudents();
+  }
+
   searchStudents(): void {
-   this.fetchData(this.pageIndex, this.pageSize);
+    this.pageIndex = 0;
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+    this.fetchData(this.pageIndex, this.pageSize);
   }
 
-
-  // Actual API Call
   fetchData(page: number, size: number): void {
     this.studentService.search(this.keyword, this.selectedStandard, this.selectedSection, page, size)
       .subscribe({
         next: (response) => {
           this.dataSource = response.content;
           this.totalElements = response.totalElements;
-          
+
           if (this.dataSource.length === 0) {
             this.showNotification('No students found matching your criteria.', 'Info');
           }
@@ -91,40 +125,44 @@ loadMasters(): void {
         }
       });
   }
-    
-// Handle Pagination Change (Next/Prev/Page Size)
+
+  // --- NAYA LOGIC: Enrollment array se active class/section nikalna ---
+  getActiveClass(student: any): string {
+    if (!student.enrollments) return '-';
+    const activeEnrollment = student.enrollments.find((e: any) => e.currentActive === true || e.isCurrentActive === true);
+    return activeEnrollment?.standard?.gradeName || '-';
+  }
+
+  getActiveSection(student: any): string {
+    if (!student.enrollments) return '-';
+    const activeEnrollment = student.enrollments.find((e: any) => e.currentActive === true || e.isCurrentActive === true);
+    return activeEnrollment?.section?.sectionName || '-';
+  }
+
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.fetchData(this.pageIndex, this.pageSize);
   }
 
-   
-
-  // Reset Filters
   clearSearch(): void {
     this.keyword = '';
     this.selectedStandard = '';
     this.selectedSection = '';
+    this.sections = [];
     this.pageIndex = 0;
-    
-    // Reset paginator UI if it exists
+
     if (this.paginator) {
       this.paginator.firstPage();
     }
-    
-    this.searchStudents();
+    this.fetchData(this.pageIndex, this.pageSize);
   }
 
   showNotification(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 3000,
-      horizontalPosition: 'center',
+      horizontalPosition: 'right',
       verticalPosition: 'bottom',
     });
   }
-
-
-
 }
-

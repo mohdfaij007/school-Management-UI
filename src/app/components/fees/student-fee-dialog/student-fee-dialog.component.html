@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Manage Fees: {{ data.studentName }}</h2>
+
+<mat-dialog-content>
+  <div *ngIf="loading" style="text-align: center; padding: 20px;">
+    Loading fees...
+  </div>
+
+  <div *ngIf="!loading && feeOptions.length === 0" style="text-align: center; color: #777;">
+    No fee structures found for this class.
+  </div>
+
+  <div *ngFor="let fee of feeOptions" class="fee-item">
+    <div class="fee-details">
+      <div style="display: flex; align-items: center;">
+        <span class="fee-name">{{ fee.feeHeadName }}</span>
+        <span *ngIf="fee.isMandatory" class="mandatory-badge">Mandatory</span>
+      </div>
+      <span class="fee-meta">{{ fee.frequency }} • ₹{{ fee.amount }}</span>
+    </div>
+    
+    <mat-checkbox 
+      color="primary"
+      [checked]="fee.assigned"
+      (change)="toggleFee(fee, $event)">
+      {{ fee.assigned ? 'Assigned' : 'Unassigned' }}
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

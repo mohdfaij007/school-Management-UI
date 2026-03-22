@@ -1,72 +1,69 @@
 <div class="login-container">
-<div class="left-panel">
-  <img src="/../../Angular/school-admin-ui/src/assets/images/7840135.jpg" alt="logo" class="illustration-img">
-  <div class="card">
-    <div class="card-header">
-      <h3>School Management System</h3>
-      <p>Please login to continue</p>
-    </div>
+  
+  <div class="left-panel animate__animated animate__fadeInLeft">
     
-    <div class="card-body">
-      <!-- FIX: Renamed #form to #loginForm to avoid conflict with component property 'form' -->
-      <!-- FIX: Changed f.submitted to loginForm.submitted -->
-      <form *ngIf="!isLoggedIn" (ngSubmit)="loginForm.form.valid && onSubmit()" #loginForm="ngForm" novalidate>
-        
-        <!-- Username Field -->
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            class="form-control"
-            name="username"
-            [(ngModel)]="form.username"
-            required
-            #username="ngModel"
-            placeholder="Enter your username"
-          />
-          <div class="error-text" *ngIf="username.errors && loginForm.submitted">
-            Username is required!
+    <mat-card class="login-card mat-elevation-z8">
+      <mat-card-header class="card-header">
+        <div class="logo-placeholder">
+          <mat-icon class="app-logo" color="primary">school</mat-icon>
+        </div>
+        <mat-card-title>Welcome Back!</mat-card-title>
+        <mat-card-subtitle>Please login to your account.</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="card-body">
+        <form *ngIf="!isLoggedIn" (ngSubmit)="loginForm.form.valid && onSubmit()" #loginForm="ngForm" novalidate class="login-form">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Username</mat-label>
+            <mat-icon matPrefix class="prefix-icon">person</mat-icon>
+            <input matInput type="text" name="username" [(ngModel)]="form.username" required #username="ngModel">
+            <mat-error *ngIf="username.errors?.['required'] && loginForm.submitted">
+              Username is required!
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <mat-icon matPrefix class="prefix-icon">lock</mat-icon>
+            <input matInput type="password" name="password" [(ngModel)]="form.password" required minlength="4" #password="ngModel">
+            <mat-error *ngIf="password.errors?.['required'] && loginForm.submitted">
+              Password is required!
+            </mat-error>
+            <mat-error *ngIf="password.errors?.['minlength'] && loginForm.submitted">
+              Password must be at least 4 characters long.
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" class="btn-login" type="submit">
+            Login to Dashboard
+          </button>
+
+          <div class="alert alert-danger animate__animated animate__shakeX" *ngIf="isLoginFailed">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ errorMessage }}</span>
           </div>
-        </div>
+        </form>
 
-        <!-- Password Field -->
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            class="form-control"
-            name="password"
-            [(ngModel)]="form.password"
-            required
-            minlength="4"
-            #password="ngModel"
-            placeholder="Enter your password"
-          />
-          <div class="error-text" *ngIf="password.errors && loginForm.submitted">
-            Password is required!
-          </div>
+        <div class="alert alert-success animate__animated animate__fadeIn" *ngIf="isLoggedIn">
+          <mat-icon>check_circle</mat-icon>
+          <span>Login successful! Redirecting...</span>
         </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <p class="copyright">© 2026 School Management System <br> All rights reserved to Asif & Tinku</p>
+   
+    
+  </div>
 
-        <!-- Submit Button -->
-        <div class="form-group">
-          <button class="btn-primary">Login</button>
-        </div>
-
-        <!-- Error Message -->
-        <div class="alert alert-danger" *ngIf="isLoginFailed">
-          Login failed: {{ errorMessage }}
-        </div>
-      </form>
-
-      <div class="alert alert-success" *ngIf="isLoggedIn">
-        Logged in successfully! Redirecting...
-      </div>
+  <div class="right-panel animate__animated animate__fadeInRight">
+    <div class="content-overlay">
+      <h1 class="animate__animated animate__fadeInUp animate__delay-1s">Smart School Manager</h1>
+      <p class="animate__animated animate__fadeInUp animate__delay-2s">
+        Empowering education through seamless management and unlocking potential with our excellence platform.
+      </p>
     </div>
   </div>
-</div>
-<div class="right-panel">
 
-  <h1>Exam Mastery Hub</h1>
-    <p>Unlocking Your Potential with Mastery Hub's Exam Excellence Platform</p>
-</div>
 </div>

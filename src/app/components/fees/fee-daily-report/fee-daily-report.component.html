@@ -1,0 +1,74 @@
+<div class="container">
+  <h2>Daily Collection Report</h2>
+
+  <mat-card style="padding: 20px; display: flex; gap: 15px; align-items: center;">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="fetchReport()">
+      <mat-icon>search</mat-icon> Load Report
+    </button>
+
+    <button mat-stroked-button (click)="printReport()">
+      <mat-icon>print</mat-icon> Print
+    </button>
+  </mat-card>
+
+  <div *ngIf="reportData" class="summary-cards">
+    <div class="card bg-blue">
+      <div class="lbl">TOTAL COLLECTION</div>
+      <div class="val">₹{{ reportData.totalCollection }}</div>
+    </div>
+    <div class="card bg-green">
+      <div class="lbl">CASH IN HAND</div>
+      <div class="val">₹{{ reportData.totalCash }}</div>
+    </div>
+    <div class="card bg-purple">
+      <div class="lbl">ONLINE / UPI</div>
+      <div class="val">₹{{ reportData.totalOnline }}</div>
+    </div>
+    <div class="card bg-orange">
+      <div class="lbl">CHEQUE / DD</div>
+      <div class="val">₹{{ reportData.totalCheque }}</div>
+    </div>
+  </div>
+
+  <br>
+
+  <div *ngIf="reportData?.transactions?.length > 0" class="mat-elevation-z8">
+    <table mat-table [dataSource]="reportData.transactions">
+      
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Receipt No </th>
+        <td mat-cell *matCellDef="let t"> #{{ t.transactionId }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef> Time </th>
+        <td mat-cell *matCellDef="let t"> {{ t.transactionDate | date:'mediumTime' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="mode">
+        <th mat-header-cell *matHeaderCellDef> Mode </th>
+        <td mat-cell *matCellDef="let t"> {{ t.paymentMode }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef> Amount </th>
+        <td mat-cell *matCellDef="let t"> <b>₹{{ t.totalAmount }}</b> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <div *ngIf="reportData?.transactions?.length === 0" style="margin-top:20px; text-align:center; color:#888;">
+    No transactions found for this date.
+  </div>
+
+</div>

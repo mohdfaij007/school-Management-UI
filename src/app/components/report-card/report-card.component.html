@@ -1,0 +1,177 @@
+<div class="no-print">
+  <div class="page-header animate__animated animate__fadeIn">
+    <h2>Report Card Generator</h2>
+    <p>Select student and exams to generate a print-ready report card.</p>
+  </div>
+
+  <div class="content-card mat-elevation-z4 animate__animated animate__fadeInUp">
+    <div class="filter-section">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Session</mat-label>
+        <mat-select [(ngModel)]="activeSessionId">
+          <mat-option *ngFor="let session of sessionList" [value]="session.id">
+            {{session.sessionName || session.year || session.id}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Class</mat-label>
+        <mat-select [(ngModel)]="selectedClassId" (ngModelChange)="onClassChange()">
+          <mat-option *ngFor="let cls of classList" [value]="cls.id">{{cls.gradeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Section</mat-label>
+        <mat-select [(ngModel)]="selectedSectionId" (ngModelChange)="loadStudents()">
+          <mat-option *ngFor="let sec of sectionList" [value]="sec.id">{{sec.sectionName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="flex-2">
+        <mat-label>Select Student</mat-label>
+        <mat-select [(ngModel)]="selectedStudentId" (ngModelChange)="onStudentChange()"> <mat-option *ngFor="let student of studentList" [value]="student.id">
+            {{student.fullName || student.firstName}} ({{student.admissionNo || student.admissionNumber}})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="exam-selection-area" *ngIf="selectedStudentId">
+      <h4>Select Exams to Include:</h4>
+      <div class="checkbox-group">
+        <mat-checkbox *ngFor="let exam of examList" 
+                      [checked]="selectedExamIds.includes(exam.id)"
+                      (change)="toggleExamSelection(exam.id)"
+                      color="primary">
+          {{exam.examName}}
+        </mat-checkbox>
+      </div>
+      
+      <div class="action-row">
+        <button mat-raised-button color="primary" class="btn-generate" (click)="generateReport()" [disabled]="isLoading">
+          <mat-icon>{{ isLoading ? 'hourglass_empty' : 'receipt_long' }}</mat-icon> 
+          {{ isLoading ? 'Generating...' : 'Generate Report Card' }}
+        </button>
+        
+       <button mat-stroked-button color="accent" *ngIf="reportCardData" (click)="downloadPDF()" [disabled]="isDownloading">
+          <mat-icon>{{ isDownloading ? 'hourglass_empty' : 'picture_as_pdf' }}</mat-icon> 
+          {{ isDownloading ? 'Downloading PDF...' : 'Download Official PDF' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="print-area" *ngIf="reportCardData">
+  
+  <div class="a4-page">
+    <div class="school-header">
+      <div class="logo-placeholder">
+        LOGO
+      </div>
+      <div class="school-details">
+        <h1>DELHI PUBLIC SCHOOL</h1>
+        <p>Sector-5, R.K. Puram, New Delhi - 110022</p>
+        <p>Affiliated to CBSE | School Code: 12345</p>
+        <h3 class="session-title">ACADEMIC PERFORMANCE REPORT ({{reportCardData.sessionName}})</h3>
+      </div>
+    </div>
+
+    <div class="student-profile">
+      <table class="profile-table">
+        <tr>
+          <th>Student Name</th>
+          <td><strong>{{reportCardData.studentName}}</strong></td>
+          <th>Admission No.</th>
+          <td>{{reportCardData.admissionNumber}}</td>
+        </tr>
+        <tr>
+          <th>Class & Section</th>
+          <td>{{reportCardData.className}} - '{{reportCardData.sectionName}}'</td>
+          <th>Date of Birth</th>
+          <td>{{reportCardData.dateOfBirth | date:'dd-MMM-yyyy'}}</td>
+        </tr>
+        <tr>
+          <th>Father's Name</th>
+          <td>{{reportCardData.fatherName}}</td>
+          <th>Mother's Name</th>
+          <td>{{reportCardData.motherName}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="academic-section" *ngFor="let exam of reportCardData.examResults">
+      <h3 class="exam-title">{{exam.examName}} Examination</h3>
+      
+      <table class="marks-table">
+        <thead>
+          <tr>
+            <th class="text-left">Subject</th>
+            <th>Max Marks</th>
+            <th>Passing Marks</th>
+            <th>Marks Obtained</th>
+            <th>Grade</th>
+            <th class="text-left">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sub of exam.subjects">
+            <td class="text-left font-weight-bold">{{sub.subjectName}}</td>
+            <td>{{sub.maxMarks}}</td>
+            <td>{{sub.passingMarks}}</td>
+            <td><strong>{{sub.marksObtained}}</strong></td>
+            <td class="grade-cell">{{sub.grade}}</td>
+            <td class="text-left text-muted">{{sub.remarks || '-'}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th class="text-left">OVERALL TOTAL</th>
+            <th>{{exam.totalMaxMarks}}</th>
+            <th>-</th>
+            <th>{{exam.totalMarksObtained}}</th>
+            <th class="grade-cell">{{exam.overallGrade}}</th>
+            <th class="text-left">Percentage: {{exam.percentage}}%</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="bottom-section">
+      <div class="attendance-box">
+        <h4>Attendance Summary</h4>
+        <p>Total Working Days: <strong>{{reportCardData.totalWorkingDays}}</strong></p>
+        <p>Total Present Days: <strong>{{reportCardData.presentDays}}</strong></p>
+        <p>Attendance Percentage: <strong>{{reportCardData.attendancePercentage}}%</strong></p>
+      </div>
+      
+      <div class="remarks-box">
+        <h4>Class Teacher's Remarks</h4>
+        <p class="teacher-remarks">{{reportCardData.classTeacherRemarks || 'Keep working hard for better results.'}}</p>
+      </div>
+    </div>
+
+    <div class="signature-section">
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <p>Class Teacher</p>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <p>Parent / Guardian</p>
+      </div>
+      <div class="sign-box">
+        <div class="sign-line"></div>
+        <p>Principal</p>
+      </div>
+    </div>
+    
+    <div class="print-date">
+      Result Declared on: {{ today | date:'dd MMMM yyyy' }}
+    </div>
+
+  </div>
+</div>

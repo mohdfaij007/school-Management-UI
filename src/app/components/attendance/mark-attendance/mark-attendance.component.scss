@@ -1,0 +1,108 @@
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.page-header {
+  margin-bottom: 24px;
+  h1 { font-size: 24px; color: #1e293b; font-weight: bold; margin: 0 0 8px 0; }
+  p { color: #64748b; margin: 0; }
+}
+
+.filter-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding-top: 8px;
+
+  mat-form-field { width: 100%; margin-bottom: -1.25em; }
+  .btn-load { height: 48px; margin-bottom: -1.25em; }
+}
+
+/* Table Styles */
+.table-card { border-radius: 8px; padding: 0; overflow: hidden; }
+.custom-table { width: 100%; }
+.custom-table th { background-color: #f8fafc; color: #475569; font-weight: 600; }
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  strong { color: #334155; font-size: 1rem; }
+  small { color: #94a3b8; font-size: 0.8rem; }
+}
+
+/* Radio Button Group Tweaks */
+.status-radio-group {
+  display: flex;
+  gap: 10px;
+  
+  mat-radio-button { margin: 0; }
+}
+
+/* Highlight Absent Row */
+.absent-row {
+  background-color: #fef2f2 !important;
+  transition: background-color 0.3s;
+}
+
+/* Input Fields */
+.custom-input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  outline: none;
+  &:focus { border-color: #3b82f6; }
+}
+
+/* History Bubbles */
+.history-bubbles {
+  display: flex;
+  gap: 4px;
+}
+
+.bubble {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: white;
+  cursor: default;
+}
+
+.bubble-present { background-color: #22c55e; } /* Green */
+.bubble-absent { background-color: #ef4444; } /* Red */
+.bubble-late { background-color: #f59e0b; } /* Orange */
+.bubble-halfday { background-color: #64748b; } /* Slate */
+.bubble-none { background-color: #e2e8f0; color: #94a3b8; } /* Gray for N/A */
+
+/* Bottom Action Bar */
+.action-bar {
+  padding: 20px 24px;
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e2e8f0;
+
+  .stats { color: #475569; font-size: 1.1rem; }
+  .btn-save { padding: 0 32px; height: 44px; font-size: 1.05rem; }
+}
+
+.loading-state, .empty-state {
+  text-align: center; padding: 40px; color: #64748b; font-size: 1.1rem;
+}
+.spinner { animation: spin 1s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { 100% { transform: rotate(360deg); } }

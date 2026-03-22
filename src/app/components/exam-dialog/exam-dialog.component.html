@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Create New Exam</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="examForm" class="dialog-form">
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Exam Name</mat-label>
+      <input matInput formControlName="examName" placeholder="e.g., Pre-Board Exam 2026">
+      <mat-error *ngIf="examForm.get('examName')?.hasError('required')">Exam Name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description (Optional)</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Brief details about this exam..."></textarea>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="examForm.invalid">
+    Save Exam
+  </button>
+</mat-dialog-actions>

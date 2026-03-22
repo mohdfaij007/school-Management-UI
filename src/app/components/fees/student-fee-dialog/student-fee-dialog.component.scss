@@ -1,0 +1,21 @@
+.fee-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .mandatory-badge {
+      background: #e3f2fd;
+      color: #1976d2;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 10px;
+    }
+    .fee-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .fee-name { font-weight: 500; font-size: 1rem; }
+    .fee-meta { font-size: 0.85rem; color: #666; }

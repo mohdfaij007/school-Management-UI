@@ -1,0 +1,74 @@
+<div class="container animate__animated animate__fadeIn">
+  <mat-card class="mat-elevation-z2">
+    <div style="padding: 24px;">
+      <h2 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; font-weight: bold;">Student Fee Allocation</h2>
+      
+      <div class="filter-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Academic Session</mat-label>
+          <mat-select [(ngModel)]="selectedSessionId" (selectionChange)="onSessionChange()">
+            <mat-option *ngFor="let s of sessions" [value]="s.id">{{ s.sessionName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Class</mat-label>
+          <mat-select [(ngModel)]="selectedClassId" (selectionChange)="onClassChange()">
+            <mat-option *ngFor="let c of classes" [value]="c.id">{{ c.gradeName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Section</mat-label>
+          <mat-select [(ngModel)]="selectedSectionId" (selectionChange)="students = []">
+            <mat-option *ngFor="let sec of sections" [value]="sec.id">{{ sec.sectionName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" style="height: 48px; margin-bottom: 1.25em;" 
+                (click)="onSearch()" [disabled]="!selectedClassId || !selectedSectionId || !selectedSessionId">
+          <mat-icon>search</mat-icon> Fetch Students
+        </button>
+      </div>
+
+      <div *ngIf="loading" style="text-align: center; padding: 20px;">
+        Loading students...
+      </div>
+
+      <table mat-table [dataSource]="students" class="mat-elevation-z1" *ngIf="students.length > 0 && !loading" style="border: 1px solid #e2e8f0; border-radius: 4px;">
+
+        <ng-container matColumnDef="admNo">
+          <th mat-header-cell *matHeaderCellDef style="background-color: #f8fafc;"> Adm No </th>
+          <td mat-cell *matCellDef="let element"> <strong>{{ element.admissionNo }}</strong> </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef style="background-color: #f8fafc;"> Student Name </th>
+          <td mat-cell *matCellDef="let element"> {{ element.fullName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="father">
+          <th mat-header-cell *matHeaderCellDef style="background-color: #f8fafc;"> Father Name </th>
+          <td mat-cell *matCellDef="let element"> {{ element.fatherName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef style="background-color: #f8fafc;"> Actions </th>
+          <td mat-cell *matCellDef="let element"> 
+            <button mat-stroked-button color="primary" (click)="openFeeDialog(element)">
+              <mat-icon>settings</mat-icon> Manage Fees
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div *ngIf="students.length === 0 && !loading" style="text-align: center; margin-top: 30px; color: #64748b; padding: 20px; background: #f8fafc; border-radius: 8px;">
+        Select Class and Section to view students.
+      </div>
+
+    </div>
+  </mat-card>
+</div>

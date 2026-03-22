@@ -1,186 +1,192 @@
-<div class="page-container">
+<div class="page-container animate__animated animate__fadeIn">
   <header class="page-header">
     <div class="breadcrumb">Dashboard &gt; Students &gt; <span class="active">{{ isEditMode ? 'Edit' : 'Add New' }}</span></div>
-    <h1>{{ isEditMode ? 'Edit Student' : 'New Student Admission'}}</h1>
+    <h1>{{ isEditMode ? 'Edit Student Details' : 'New Student Admission'}}</h1>
   </header>
 
-  <form [formGroup]="studentForm" (ngSubmit)="saveStudent()">
+  <form [formGroup]="studentForm" (ngSubmit)="saveStudent()" class="admission-form">
 
-    <section class="card">
-      <div class="card-header"><h3>Academic Details</h3></div>
-      <div class="card-body grid-2-col">
-        <div class="form-group">
-          <label>Academic Session <span class="required">*</span></label>
-          <select class="form-control" formControlName="academicSessionId">
-            <option value="" disabled>Select Session</option>
-            <option *ngFor="let ses of sessions" [value]="ses.id">{{ ses.sessionName }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Admission Number <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="admissionNumber" placeholder="e.g. A-2025-001">
-        </div>
-        <div class="form-group">
-          <label>Class <span class="required">*</span></label>
-          <select class="form-control" formControlName="standardId">
-            <option value="" disabled>Select Class</option>
-            <option *ngFor="let std of standards" [value]="std.id">{{ std.gradeName }}</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Section <span class="required">*</span></label>
-          <select class="form-control" formControlName="sectionId">
-            <option value="" disabled>Select Section</option>
-            <option *ngFor="let sec of sections" [value]="sec.id">{{ sec.sectionName }}</option>
-          </select>
-        </div>
-      </div>
-    </section>
+    <mat-card class="form-section-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Academic Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="grid-2-col">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Academic Session</mat-label>
+          <mat-select formControlName="sessionId">
+            <mat-option *ngIf="activeSession" [value]="activeSession.id">{{ activeSession.sessionName }} (Active)</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Admission Number</mat-label>
+          <input matInput formControlName="admissionNumber" [placeholder]="isEditMode ? '' : 'System will Auto-Generate'" readonly>
+          <mat-icon matSuffix class="text-muted">tag</mat-icon>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Class (Standard)</mat-label>
+          <mat-select formControlName="standardId" (selectionChange)="onClassChange($event)">
+            <mat-option *ngFor="let cls of availableClasses" [value]="cls.id">{{ cls.gradeName }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="studentForm.get('standardId')?.hasError('required')">Class is required</mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Section</mat-label>
+          <mat-select formControlName="sectionId">
+            <mat-option *ngFor="let sec of availableSections" [value]="sec.id">{{ sec.sectionName }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="studentForm.get('sectionId')?.hasError('required')">Section is required</mat-error>
+        </mat-form-field>
 
-    <section class="card">
-      <div class="card-header"><h3>Personal Details</h3></div>
-      <div class="card-body grid-2-col">
-        <div class="form-group">
-          <label>First Name <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="firstName">
-        </div>
-        <div class="form-group">
-          <label>Last Name <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="lastName">
-        </div>
-        <div class="form-group">
-          <label>Date of Birth <span class="required">*</span></label>
-          <input type="date" class="form-control" formControlName="dateOfBirth">
-        </div>
-        <div class="form-group">
-          <label>Contact Phone</label>
-          <input type="tel" class="form-control" formControlName="contactPhone" placeholder="10-digit mobile number">
-        </div>
-        <div class="form-group">
-          <label>Nationality</label>
-          <input type="text" class="form-control" formControlName="nationality" placeholder="e.g. Indian">
-        </div>
-        <div class="form-group">
-          <label>Aadhar Number</label>
-          <input type="text" class="form-control" formControlName="aadharNumber">
-        </div>
-      </div>
-    </section>
+      </mat-card-content>
+    </mat-card>
 
-    <section class="card">
-       <div class="card-header"><h3>Parents Details</h3></div>
-      <div class="card-body grid-2-col">
-        <div class="form-group">
-          <label>Father's Name <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="fatherName">
-        </div>
-        <div class="form-group">
-          <label>Mother's Name <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="motherName">
-        </div>
-        <div class="form-group">
-          <label>Father's Occupation</label>
-          <input type="text" class="form-control" formControlName="fatherOccupation">
-        </div>
-        <div class="form-group">
-          <label>Mother's Occupation</label>
-          <input type="text" class="form-control" formControlName="motherOccupation">
-        </div>
-        <div class="form-group">
-          <label>Primary Mobile No. <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="primaryMobile">
-        </div>
-        <div class="form-group">
-          <label>Secondary Mobile No.</label>
-          <input type="text" class="form-control" formControlName="secondaryMobile">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" class="form-control" formControlName="email">
-        </div>
-      </div>
-    </section>
+    <mat-card class="form-section-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Personal Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="grid-2-col">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" placeholder="Enter first name">
+          <mat-error *ngIf="studentForm.get('firstName')?.hasError('required')">First Name is required</mat-error>
+        </mat-form-field>
 
-    <section class="card">
-      <div class="card-header"><h3>Communication Address</h3></div>
-      <div class="card-body grid-2-col">
-        <div class="form-group" style="grid-column: span 2;">
-          <label>Current Address <span class="required">*</span></label>
-          <textarea class="form-control" formControlName="currentAddress" rows="3"></textarea>
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" placeholder="Enter last name">
+          <mat-error *ngIf="studentForm.get('lastName')?.hasError('required')">Last Name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth">
+          <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dobPicker></mat-datepicker>
+          <mat-error *ngIf="studentForm.get('dateOfBirth')?.hasError('required')">DOB is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Aadhar Number</mat-label>
+          <input matInput formControlName="aadharNumber" placeholder="12-digit Aadhar">
+        </mat-form-field>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="form-section-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Parents & Contact Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="grid-2-col">
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Father's Name</mat-label>
+          <input matInput formControlName="fatherName">
+          <mat-error *ngIf="studentForm.get('fatherName')?.hasError('required')">Father's Name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mother's Name</mat-label>
+          <input matInput formControlName="motherName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Emergency/Primary Phone</mat-label>
+          <input matInput formControlName="contactPhone" maxlength="10">
+          <mat-icon matPrefix>phone</mat-icon>
+          <mat-error *ngIf="studentForm.get('contactPhone')?.hasError('pattern')">Invalid Phone</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Secondary Phone</mat-label>
+          <input matInput formControlName="secondaryMobile" maxlength="10">
+          <mat-icon matPrefix>phone</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput type="email" formControlName="email">
+          <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Current Address</mat-label>
+          <textarea matInput formControlName="currentAddres" rows="2"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Pincode</mat-label>
+          <input matInput formControlName="pincode">
+        </mat-form-field>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="form-section-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Previous Academic Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="grid-2-col">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Previous School Name</mat-label>
+          <input matInput formControlName="prevSchoolName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Class Passed</mat-label>
+          <input matInput formControlName="lastClassPassed">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Percentage/Grade</mat-label>
+          <input matInput formControlName="prevGrade">
+        </mat-form-field>
+
+         <mat-form-field appearance="outline">
+          <mat-label>TC No.</mat-label>
+          <input matInput formControlName="tcNumber">
+        </mat-form-field>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="form-section-card mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Documents & Photo Upload</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="photo-upload-container">
+        
+        <div class="preview-circle">
+          <img [src]="imagePreview || 'assets/placeholder-user.png'" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
         </div>
 
-        <div class="form-group">
-          <label>City <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="city">
-        </div>
-        <div class="form-group">
-          <label>State <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="state">
-        </div>
-        <div class="form-group">
-          <label>Pin Code <span class="required">*</span></label>
-          <input type="text" class="form-control" formControlName="pinCode">
+        <div class="upload-controls">
+          <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
+            <mat-icon>cloud_upload</mat-icon> Choose Photo
+          </button>
+          <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept="image/*">
+          <span class="file-name" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+          <p class="text-muted">Max size: 2MB. JPG/PNG only.</p>
         </div>
 
-        <div class="form-group checkbox-group" style="grid-column: span 2; margin-top: 10px;">
-          <input type="checkbox" id="sameAddress" formControlName="isAddressSame">
-          <label for="sameAddress" style="display:inline; margin-left: 8px;">
-            Permanent Address is same as Current Address
-          </label>
-        </div>
-
-        <div class="form-group" style="grid-column: span 2;">
-          <label>Permanent Address</label>
-          <textarea class="form-control" formControlName="permanentAddress" rows="3"></textarea>
-        </div>
-      </div>
-    </section>
-    
-    <section class="card">
-      <div class="card-header"><h3>Previous Schooling</h3></div>
-         <div class="card-body grid-2-col">
-        <div class="form-group">
-          <label>Previous School Name</label>
-          <input type="text" class="form-control" formControlName="prevSchoolName">
-        </div>
-        <div class="form-group">
-          <label>Last Class Passed</label>
-          <input type="text" class="form-control" formControlName="lastClassPassed">
-        </div>
-        <div class="form-group">
-          <label>Percentage/Grade</label>
-          <input type="text" class="form-control" formControlName="prevGrade">
-        </div>
-         <div class="form-group">
-          <label>TC No</label>
-          <input type="text" class="form-control" formControlName="tcNumber">
-        </div>
-    </div>
-    </section>
-
-    <section class="card">
-      <div class="card-header"><h3>Documents Uploads</h3></div>
-
-        <div class="form-group photo-upload-section" style="grid-column: span 2; display: flex; gap: 20px; align-items: center;">
-  
-  <div class="preview-circle" style="width: 100px; height: 100px; border-radius: 50%; background: #eee; overflow: hidden; border: 2px solid #ccc;">
-    <img [src]="imagePreview || 'assets/placeholder-user.png'" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
-  </div>
-
-  <div class="upload-controls">
-    <label>Student Photo</label>
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control">
-    <small class="text-muted">Max size: 2MB. JPG/PNG only.</small>
-  </div>
-
-</div>
-
-    </section>
+      </mat-card-content>
+    </mat-card>
 
     <div class="form-actions">
-      <button type="button" class="btn btn-secondary" routerLink="/search-student">Cancel</button>
-      <button type="submit" class="btn btn-primary" [disabled]="studentForm.invalid">
-        {{ isEditMode ? 'Update Student' : 'Submit Admission' }}
+      <button mat-button type="button" routerLink="/search-student">Cancel</button>
+      <button mat-flat-button color="primary" type="submit">
+        <mat-icon>save</mat-icon> {{ isEditMode ? 'Update Details' : 'Save & Admit Student' }}
       </button>
     </div>
 

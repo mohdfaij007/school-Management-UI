@@ -1,0 +1,102 @@
+<div class="page-container animate__animated animate__fadeIn">
+  
+  <header class="page-header">
+    <h1>Monthly Attendance Register</h1>
+    <p>View complete class attendance matrix with automatic holiday mapping.</p>
+  </header>
+
+  <mat-card class="filter-card mat-elevation-z2">
+    <mat-card-content class="filter-grid">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Session</mat-label>
+        <mat-select [(ngModel)]="activeSessionId" disabled>
+          <mat-option *ngFor="let s of sessionList" [value]="s.id">{{ s.sessionName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Class</mat-label>
+        <mat-select [(ngModel)]="selectedClassId" (selectionChange)="onClassChange()">
+          <mat-option *ngFor="let cls of classList" [value]="cls.id">{{ cls.gradeName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Section</mat-label>
+        <mat-select [(ngModel)]="selectedSectionId" (selectionChange)="reportData = null">
+          <mat-option *ngFor="let sec of sectionList" [value]="sec.id">{{ sec.sectionName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Month</mat-label>
+        <mat-select [(ngModel)]="selectedMonth" (selectionChange)="reportData = null">
+          <mat-option *ngFor="let m of months" [value]="m.value">{{ m.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Year</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="reportData = null">
+          <mat-option *ngFor="let y of years" [value]="y">{{ y }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="btn-load" (click)="fetchMonthlyRegister()" [disabled]="isLoading || !selectedSectionId">
+        <mat-icon>table_chart</mat-icon> Load Grid
+      </button>
+
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-icon class="spinner">sync</mat-icon> Generating Matrix...
+  </div>
+
+  <mat-card class="grid-card mat-elevation-z3" *ngIf="!isLoading && reportData">
+    
+    <div class="table-responsive">
+      <table class="excel-table">
+        <thead>
+          <tr>
+            <th class="sticky-col first-col">Adm No</th>
+            <th class="sticky-col second-col">Student Name</th>
+            <th *ngFor="let d of daysArray" [ngClass]="{'holiday-th': reportData.holidayMap[d]}">{{ d }}</th>
+            <th class="summary-col present-th">Total P</th>
+            <th class="summary-col absent-th">Total A</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          <tr *ngFor="let student of reportData.students" class="data-row">
+            <td class="sticky-col first-col">{{ student.admissionNo }}</td>
+            <td class="sticky-col second-col font-bold">{{ student.studentName }}</td>
+            
+            <td *ngFor="let d of daysArray" class="day-cell" [ngClass]="getCellClass(d, student)">
+              {{ getCellText(d, student) }}
+            </td>
+            
+            <td class="summary-col present-cell">{{ student.presentCount }}</td>
+            <td class="summary-col absent-cell">{{ student.absentCount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="legend-bar">
+      <span><span class="box box-p">P</span> Present</span>
+      <span><span class="box box-a">A</span> Absent</span>
+      <span><span class="box box-l">L</span> Late</span>
+      <span><span class="box box-h">H</span> Halfday</span>
+      <span><span class="box box-w">W</span> Weekly Off</span>
+      <span><span class="box box-ho">HO</span> Holiday</span>
+    </div>
+    
+  </mat-card>
+
+  <div *ngIf="!isLoading && reportData && reportData.students.length === 0" class="empty-state">
+    No students found in this class.
+  </div>
+
+</div>

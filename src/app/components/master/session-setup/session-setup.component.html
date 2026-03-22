@@ -1,0 +1,99 @@
+<div class="page-header animate__animated animate__fadeIn">
+  <h2>Session & Class Setup</h2>
+  <p>Map Classes and Sections to an Academic Session.</p>
+</div>
+
+<div class="content-card mat-elevation-z4 animate__animated animate__fadeInUp">
+  <div class="form-title">
+    <h3>Add New Mapping</h3>
+  </div>
+  
+  <div class="mapping-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Academic Session</mat-label>
+      <mat-select [(ngModel)]="selectedSessionId">
+        <mat-option *ngFor="let session of sessions" [value]="session.id">
+          {{ session.sessionName }} {{ session.active ? '(Active)' : '' }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Class (Standard)</mat-label>
+      <mat-select [(ngModel)]="selectedClassId">
+        <mat-option *ngFor="let cls of classes" [value]="cls.id">
+          {{ cls.gradeName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sections (Multi-select)</mat-label>
+      <mat-select [(ngModel)]="selectedSectionIds" multiple>
+        <mat-option *ngFor="let sec of sections" [value]="sec.id">
+          {{ sec.sectionName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="small-input">
+      <mat-label>Max Capacity</mat-label>
+      <input matInput type="number" [(ngModel)]="maxCapacity">
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" class="save-btn" (click)="saveMapping()">
+      <mat-icon>save</mat-icon> Save Mapping
+    </button>
+  </div>
+</div>
+
+<div class="content-card mat-elevation-z4 animate__animated animate__fadeInUp">
+  <div class="table-header">
+    <h3>Mapped Classes & Sections</h3>
+    
+    <mat-form-field appearance="outline" class="filter-dropdown">
+      <mat-label>Filter by Session</mat-label>
+      <mat-select [(ngModel)]="filterSessionId" (selectionChange)="loadTableData()">
+        <mat-option *ngFor="let session of sessions" [value]="session.id">
+          {{ session.sessionName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <table mat-table [dataSource]="mappedData" class="mat-elevation-z1 mapping-table">
+    
+    <ng-container matColumnDef="className">
+      <th mat-header-cell *matHeaderCellDef> Class </th>
+      <td mat-cell *matCellDef="let element"> <strong>{{element.standard?.gradeName}}</strong> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sectionName">
+      <th mat-header-cell *matHeaderCellDef> Section </th>
+      <td mat-cell *matCellDef="let element"> {{element.section?.sectionName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="maxCapacity">
+      <th mat-header-cell *matHeaderCellDef> Max Capacity </th>
+      <td mat-cell *matCellDef="let element"> {{element.maxCapacity}} Students </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="warn" (click)="deleteMapping(element.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="4" style="text-align: center; padding: 20px;">
+        No mappings found for the selected session.
+      </td>
+    </tr>
+  </table>
+</div>

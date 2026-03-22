@@ -1,0 +1,84 @@
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.page-header {
+  margin-bottom: 24px;
+  h1 {
+    font-size: 24px;
+    color: #1e293b;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+.filter-card {
+  margin-bottom: 24px;
+  border-radius: 8px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding-top: 8px;
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: -1.25em;
+  }
+
+  .search-btn {
+    height: 48px;
+    margin-bottom: -1.25em;
+  }
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.custom-table {
+  width: 100%;
+
+  th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .bold-text {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .due-amount {
+    color: #dc2626; /* Red color to highlight due */
+    font-weight: bold;
+    font-size: 1.05rem;
+  }
+
+  .small-icon {
+    font-size: 16px;
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
+    color: #64748b;
+  }
+}
+
+.loading-text, .empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}

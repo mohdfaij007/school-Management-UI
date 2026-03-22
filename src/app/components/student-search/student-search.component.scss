@@ -4,42 +4,44 @@
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header h1 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #333;
+  color: #1e293b;
+  font-weight: bold;
 }
 
-/* Filter Section */
 .search-card {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  border-radius: 8px;
 }
 
 .search-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 15px;
+  grid-template-columns: 2.5fr 1fr 1fr auto;
+  gap: 16px;
   align-items: center;
+  padding-top: 8px;
 }
 
-/* Material Field Adjustments */
 mat-form-field {
   width: 100%;
+  margin-bottom: -1.25em;
 }
 
 .button-group {
   display: flex;
-  gap: 10px;
-  height: 56px; /* Align with inputs */
+  gap: 12px;
   align-items: center;
+  margin-bottom: -1.25em;
 }
 
-/* Table Section */
 .table-container {
   overflow: auto;
-  border-radius: 4px;
+  border-radius: 8px;
   background: white;
 }
 
@@ -48,23 +50,27 @@ table {
 }
 
 .bold-text {
-  font-weight: 500;
-  color: #2c3e50;
+  font-weight: 600;
+  color: #334155;
 }
 
 .badge {
-  background-color: #e3f2fd;
-  color: #1565c0;
-  padding: 4px 8px;
+  background-color: #e0f2fe;
+  color: #1d4ed8;
+  padding: 4px 10px;
   border-radius: 4px;
-  font-weight: bold;
-  font-size: 12px;
+  font-size: 0.85em;
+  font-weight: 500;
 }
 
+.student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
 
-:root {
-  @include mat.paginator-overrides((
-    container-text-color: orange,
-    container-background-color: red,
-  ));
+.element-row:hover {
+  background-color: #f8fafc;
 }
