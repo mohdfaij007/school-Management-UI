@@ -35,7 +35,7 @@ export class Admission1Component implements OnInit {
 
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
-  baseURL = `${environment.apiUrl}/photos` 
+  
 
   studentForm: FormGroup;
   isEditMode: boolean = false;
@@ -164,7 +164,7 @@ export class Admission1Component implements OnInit {
       });
 
       if (data.profilePhoto) {
-        this.imagePreview = `${this.baseURL}${data.profilePhoto}`;
+        this.imagePreview = data.profilePhoto;
       }
     });
   }
@@ -232,7 +232,7 @@ export class Admission1Component implements OnInit {
   handleSuccess(action: string): void {
     this.snackBar.open(`Student Successfully ${action}!`, 'Close', { duration: 3000, panelClass: ['bg-success'] });
     setTimeout(() => {
-      this.router.navigate(['/dashboard/students']);
+      this.router.navigate(['/dashboard']);
     }, 1000);
   }
 }
