@@ -1,0 +1,90 @@
+<div class="page-container animate__animated animate__fadeIn">
+  
+  <mat-card class="filter-card mat-elevation-z3">
+    <h2>Year-End Student Promotion</h2>
+    <form [formGroup]="setupForm" class="grid-layout">
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Current Session</mat-label>
+        <mat-select formControlName="currentSessionId">
+          <mat-option *ngFor="let s of sessions" [value]="s.id">{{s.sessionName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Current Class</mat-label>
+        <mat-select formControlName="currentClassId">
+          <mat-option *ngFor="let c of classes" [value]="c.id">{{c.gradeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Next Year Session</mat-label>
+        <mat-select formControlName="nextSessionId">
+          <mat-option *ngFor="let s of sessions" [value]="s.id">{{s.sessionName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Default Target Class</mat-label>
+        <mat-select formControlName="nextClassId">
+          <mat-option *ngFor="let c of classes" [value]="c.id">{{c.gradeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="fetchStudents()" class="fetch-btn">
+        Load Students
+      </button>
+    </form>
+  </mat-card>
+
+  <mat-card class="table-card mat-elevation-z3" *ngIf="studentsList.length > 0">
+    <table mat-table [dataSource]="studentsList">
+      
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Student Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.studentName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="admissionNo">
+        <th mat-header-cell *matHeaderCellDef> Admission No </th>
+        <td mat-cell *matCellDef="let element"> {{element.admissionNo}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field appearance="fill" style="margin-top: 15px; width: 150px;">
+            <mat-select [(value)]="element.promotionStatus">
+              <mat-option value="PROMOTED">Promote</mat-option>
+              <mat-option value="RETAINED">Retain (Fail)</mat-option>
+              <mat-option value="LEFT_SCHOOL">Left School</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nextClass">
+        <th mat-header-cell *matHeaderCellDef> Target Class </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field appearance="fill" style="margin-top: 15px; width: 150px;" *ngIf="element.promotionStatus !== 'LEFT_SCHOOL'">
+            <mat-select [(value)]="element.nextClassId">
+              <mat-option *ngFor="let c of classes" [value]="c.id">{{c.gradeName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span *ngIf="element.promotionStatus === 'LEFT_SCHOOL'" class="text-muted">N/A</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="action-footer" style="padding: 20px; text-align: right;">
+      <button mat-flat-button color="accent" (click)="submitBatchPromotion()" style="font-size: 16px; padding: 5px 30px;">
+        Submit Batch Promotion
+      </button>
+    </div>
+  </mat-card>
+
+</div>

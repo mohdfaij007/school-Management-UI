@@ -18,6 +18,7 @@ import { StudentService } from '../../services/student.service';
 import { MasterService } from '../../services/master.service';
 import { MasterSetupService } from '../../services/master-setup.service';
 import { environment } from '../../../environments/environment';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-admission1',
@@ -53,7 +54,8 @@ export class Admission1Component implements OnInit {
     private masterSetupService: MasterSetupService,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private storageService: StorageService
   ) {
     this.studentForm = this.fb.group({
       sessionId: [{ value: '', disabled: true }, Validators.required], 
@@ -191,11 +193,14 @@ export class Admission1Component implements OnInit {
       this.snackBar.open('Please fill all required fields correctly!', 'Close', { duration: 3000 });
       return;
     }
+// --- New LOGIC: Get dynamic school ID from session ---
+    const currentUser = this.storageService.getUser();
+    const dynamicSchoolId = currentUser?.schoolId || 1; // Fallback to 1 just in case
 
     const formValues = this.studentForm.getRawValue(); 
     const payload = {
       ...formValues,
-      schoolProfileId: 1 
+      schoolProfileId: dynamicSchoolId // <-- HARDCODED BUG IS FIXED!
     };
 
     if (this.isEditMode) {

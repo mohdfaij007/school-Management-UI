@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
+
+
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AddStudentComponent } from './components/add-student/add-student.component';
@@ -24,44 +28,70 @@ import { AttendanceReportComponent } from './components/attendance/attendance-re
 import { MarkAttendanceComponent } from './components/attendance/mark-attendance/mark-attendance.component';
 import { AcademicCalendarComponent } from './components/master/academic-calendar/academic-calendar.component';
 import { MonthlyRegisterComponent } from './components/attendance/monthly-register/monthly-register.component';
-
+import { StudentPromotionComponent } from './components/student-promotion/student-promotion.component';
 
 
 
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'add-student', component: AddStudentComponent },
-  {path:'admission',component:AdmissionComponent},
-  { path: 'attendance-report', component: AttendanceReportComponent },
-  {path:'mark-attendance', component: MarkAttendanceComponent},
-  {path:'admission1',component:Admission1Component},
-  {path:'dashboard/students/edit/:id', component:Admission1Component},
-  {path:'search-student', component: StudentSearchComponent},
-  {path:'dashboard/students/profile/:id', component: StudentProfileComponent},
-  {path:'fees/head',component:FeeHeadComponent},
-  {path:'fees/head/add',component:FeeHeadFormComponent},
-  {path:'fees/head/edit/:id',component:FeeHeadFormComponent},
-  { path: 'fees/structure/add', component: FeeStructureFormComponent },
-  {path:'fees/structure',component:FeeStructureComponent},
-  { path: 'fees/structure/edit/:id', component: FeeStructureFormComponent },
+  
+  // ALL PROTECTED ROUTES
   {
-    path: 'fees/mapping', 
-    component: StudentFeeMappingComponent
+    path: '',
+    canActivate: [authGuard], // Every route inside here requires login
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      
+      // Basic student routes (Maybe accessible to Admin, Teacher, and Student)
+      { path: 'search-student', component: StudentSearchComponent },
+      { path: 'dashboard/students/profile/:id', component: StudentProfileComponent },
+      { path: 'attendance-report', component: AttendanceReportComponent },
+
+      // RESTRICTED ROUTES: Only Admin and Teacher
+      {
+        path: '',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'TEACHER'] }, // <-- Students cannot access these!
+        children: [
+          { path: 'add-student', component: AddStudentComponent },
+          { path: 'admission', component: AdmissionComponent },
+          { path: 'admission1', component: Admission1Component },
+          { path: 'dashboard/students/edit/:id', component: Admission1Component },
+          { path: 'mark-attendance', component: MarkAttendanceComponent },
+          { path: 'attendance/monthly-register', component: MonthlyRegisterComponent },
+          { path: 'exam/marks-entry', component: MarksEntryComponent },
+          { path: 'exam/report-card', component: ReportCardComponent },
+          {path: 'promotion', component: StudentPromotionComponent},
+        ]
+      },
+
+      // SUPER RESTRICTED ROUTES: Only Admin
+      {
+        path: '',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN'] }, // <-- Only Admins can touch Fees and Master Settings
+        children: [
+          { path: 'fees/head', component: FeeHeadComponent },
+          { path: 'fees/head/add', component: FeeHeadFormComponent },
+          { path: 'fees/head/edit/:id', component: FeeHeadFormComponent },
+          { path: 'fees/structure/add', component: FeeStructureFormComponent },
+          { path: 'fees/structure', component: FeeStructureComponent },
+          { path: 'fees/structure/edit/:id', component: FeeStructureFormComponent },
+          { path: 'fees/mapping', component: StudentFeeMappingComponent },
+          { path: 'fees/collection', component: FeeCollectionComponent },
+          { path: 'fees/defaulters', component: FeeDefaultersComponent },
+          { path: 'fees/reports/daily', component: FeeDailyReportComponent },
+          { path: 'fees/reports/head-wise', component: FeeHeadReportComponent },
+          { path: 'masters/exam', component: ExamSetupComponent },
+          { path: 'master/master-settings', component: MasterSettingsComponent },
+          { path: 'master/session-setup', component: SessionSetupComponent },
+          { path: 'master/academic-calender', component: AcademicCalendarComponent },
+        ]
+      }
+    ]
   },
-  { path: 'fees/collection', component: FeeCollectionComponent},
-  { path: 'fees/defaulters', component: FeeDefaultersComponent},
-  { path: 'fees/reports/daily', component: FeeDailyReportComponent},
-  { path: 'fees/reports/head-wise', component: FeeHeadReportComponent},
-  {path : 'masters/exam', component: ExamSetupComponent},
-  {path:  'exam/marks-entry', component: MarksEntryComponent},
-  {path: 'exam/report-card', component:ReportCardComponent},
-  {path: 'master/master-settings', component: MasterSettingsComponent},
-  {path: 'master/session-setup', component:SessionSetupComponent},
-  {path:'master/academic-calender', component: AcademicCalendarComponent},
-  {path: 'attendance/monthly-register',component:MonthlyRegisterComponent},
 
-  { path: '', redirectTo: 'login', pathMatch: 'full' } // Default to login
-
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'dashboard' } // Catch-all route
 ];

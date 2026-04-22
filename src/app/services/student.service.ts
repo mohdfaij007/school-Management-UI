@@ -95,4 +95,7 @@ getStudentsByClass(classId: number, sectionId: number, sessionId: number): Obser
     return this.http.get<any[]>(`${API_URL}/by-class`, { params });
   }
 
+  promoteStudentsBatch(payload: any): Observable<any> {
+    return this.http.post(`${API_URL}/promote`, payload);
+  }
 }

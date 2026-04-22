@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
       children: [
         { label: 'New Admission', route: '/admission1' },
         { label: 'Enquiry', route: '/admission1' },
-        { label: 'Registration Status', route: '/status' }
+        { label: 'Promotion', route: '/promotion' }
       ]
     },
     {

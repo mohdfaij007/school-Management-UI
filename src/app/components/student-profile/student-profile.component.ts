@@ -29,7 +29,8 @@ export class StudentProfileComponent implements OnInit {
   activeEnrollment: any = null; // Mapped Data store karne ke liye
   loading: boolean = true;
   imagePreview: string | ArrayBuffer | null = null;
-  baseURL = 'http://localhost:8080/photos/';
+  
+  // baseURL is completely removed!
 
   constructor(
     private route: ActivatedRoute,
@@ -57,8 +58,11 @@ export class StudentProfileComponent implements OnInit {
         }
 
         this.loading = false;
+        
+        // --- UPDATED CLOUDINARY LOGIC ---
         if (this.student.profilePhoto) {
-          this.imagePreview = `${this.baseURL}${this.student.profilePhoto}`;
+          // Just assign the full URL directly from the database!
+          this.imagePreview = this.student.profilePhoto; 
         }
       },
       error: (e) => {
