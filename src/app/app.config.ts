@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './helpers/auth.interceptor';
 
+
 // 👇 1. Import these
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 

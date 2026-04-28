@@ -6,7 +6,6 @@ import { roleGuard } from './guards/role.guard';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AddStudentComponent } from './components/add-student/add-student.component';
-import { AdmissionComponent } from './components/admission/admission.component';
 import { Admission1Component } from './components/admission1/admission1.component';
 import { StudentSearchComponent } from './components/student-search/student-search.component';
 import { StudentProfileComponent } from './components/student-profile/student-profile.component';
@@ -55,7 +54,6 @@ export const routes: Routes = [
         data: { roles: ['ADMIN', 'TEACHER'] }, // <-- Students cannot access these!
         children: [
           { path: 'add-student', component: AddStudentComponent },
-          { path: 'admission', component: AdmissionComponent },
           { path: 'admission1', component: Admission1Component },
           { path: 'dashboard/students/edit/:id', component: Admission1Component },
           { path: 'mark-attendance', component: MarkAttendanceComponent },

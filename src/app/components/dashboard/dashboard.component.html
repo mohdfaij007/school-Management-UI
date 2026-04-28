@@ -1,5 +1,116 @@
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<div class="dashboard-container">
+<div class="dashboard-container animate__animated animate__fadeIn" *ngIf="metrics">
+  
+  <!-- TIER 1: KPI CARDS -->
+  <div class="kpi-grid">
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-text">
+          <h3>Total Students</h3>
+          <h2>{{ metrics.totalActiveStudents }}</h2>
+        </div>
+        <mat-icon class="kpi-icon text-primary">groups</mat-icon>
+      </div>
+    </mat-card>
 
- 
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-text">
+          <h3>Today's Attendance</h3>
+          <h2>{{ metrics.todayAttendanceRate }}%</h2>
+        </div>
+        <mat-icon class="kpi-icon text-success">how_to_reg</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-text">
+          <h3>Today's Collection</h3>
+          <h2>₹{{ metrics.todayRevenue | number:'1.2-2' }}</h2>
+        </div>
+        <mat-icon class="kpi-icon text-accent">payments</mat-icon>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-content">
+        <div class="kpi-text">
+          <h3>Outstanding Dues</h3>
+          <h2 class="text-danger">₹{{ metrics.totalOutstandingDues | number:'1.2-2' }}</h2>
+        </div>
+        <mat-icon class="kpi-icon text-danger">warning</mat-icon>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- TIER 2: TREND CHARTS -->
+  <div class="charts-grid">
+    <mat-card class="chart-card">
+      <mat-card-header><mat-card-title>Revenue Trend</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="chart-wrapper">
+          <canvas baseChart type="bar" [data]="barChartData" [options]="barChartOptions"></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <mat-card-header><mat-card-title>Weekly Attendance</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <div class="chart-wrapper">
+         <canvas baseChart type="line" [data]="lineChartData" [options]="lineChartOptions"></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- TIER 3: ACTION TABLES -->
+  <div class="tables-grid">
+    <mat-card class="table-card">
+      <mat-card-header><mat-card-title>Top Fee Defaulters</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="metrics.topDefaulters" class="mat-elevation-z0">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Student Name</th>
+            <td mat-cell *matCellDef="let element">{{element.studentName}}</td>
+          </ng-container>
+          <ng-container matColumnDef="class">
+            <th mat-header-cell *matHeaderCellDef>Adm No.</th>
+            <td mat-cell *matCellDef="let element">{{element.admissionNo}}</td>
+          </ng-container>
+          <ng-container matColumnDef="dueAmount">
+            <th mat-header-cell *matHeaderCellDef>Due Amount</th>
+            <td mat-cell *matCellDef="let element" class="text-danger font-weight-bold">₹{{element.totalDueAmount | number:'1.2-2'}}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="defaulterColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: defaulterColumns;"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="table-card">
+      <mat-card-header><mat-card-title>Recent Transactions</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="metrics.recentTransactions" class="mat-elevation-z0">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">{{element.transactionDate | date:'mediumDate'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let element" class="text-success font-weight-bold">₹{{element.totalAmount | number:'1.2-2'}}</td>
+          </ng-container>
+          <ng-container matColumnDef="mode">
+            <th mat-header-cell *matHeaderCellDef>Mode</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="badge badge-{{element.paymentMode | lowercase}}">{{element.paymentMode}}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="transactionColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: transactionColumns;"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
 </div>

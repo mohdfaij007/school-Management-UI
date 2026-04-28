@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
-import { filter } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 
 export interface MenuItem {
   label: string;
@@ -17,16 +17,18 @@ export interface MenuItem {
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   username = '';
   currentUser: any;
   isSidebarOpen = true;
   expandedItem: MenuItem | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(private storageService: StorageService, public router: Router) {
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
     ).subscribe(() => {
       this.checkLoginStatus();
       this.setActiveMenu();
@@ -173,5 +175,10 @@ export class HeaderComponent implements OnInit {
     this.storageService.clean();
     this.isLoggedIn = false;
     this.router.navigate(['/login']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

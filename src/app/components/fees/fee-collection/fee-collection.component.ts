@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -14,6 +14,7 @@ import { StudentService } from '../../../services/student.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface FeeHeadDue{
   mappingId: number;
@@ -56,7 +57,9 @@ export interface FeeDueReport{
   templateUrl: './fee-collection.component.html',
   styleUrl: './fee-collection.component.scss'
 })
-export class FeeCollectionComponent {
+export class FeeCollectionComponent implements OnInit,OnDestroy{
+
+  private destroy$ = new Subject<void>(); // Create the destroy subject
 
   report: FeeDueReport | null = null; 
   dataSource = new MatTableDataSource<FeeHeadDue>([]); 
@@ -91,10 +94,12 @@ export class FeeCollectionComponent {
   
   ngOnInit(): void {
     // Check if coming from Profile screen with an Admission Number
-    this.route.queryParams.subscribe(params => {
+   this.route.queryParams.pipe(
+      takeUntil(this.destroy$) // 2. Add takeUntil here!
+    ).subscribe(params => {
       if (params['admNo']) {
         this.searchAdmissionNo = params['admNo'];
-        this.searchStudent(); // Auto-trigger search
+        this.searchStudent();
       }
     });
   }
@@ -300,5 +305,10 @@ export class FeeCollectionComponent {
       popupWin.document.write(receiptContent);
       popupWin.document.close();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
